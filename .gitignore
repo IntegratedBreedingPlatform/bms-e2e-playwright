@@ -41,3 +41,4 @@ Thumbs.db
 *.tmp
 *.swp
 /playwright/.auth
+playwright/.auth/user.json
