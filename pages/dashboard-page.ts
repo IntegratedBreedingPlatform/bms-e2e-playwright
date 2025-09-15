@@ -49,7 +49,7 @@ export class DashboardPage{
         await expect(this.cropLabel).toBeVisible();
         await expect(this.cropDropDown).toBeVisible();
         await this.cropDropDown.fill(crop);
-        await this.cropDropDown.press('Enter');
+        await this.page.getByRole('option', { name: crop }).click();
 
     }
 
@@ -57,11 +57,12 @@ export class DashboardPage{
         await expect(this.programLabel).toBeVisible();
         await expect(this.programDropdown).toBeVisible();
         await this.programDropdown.fill(program);
-        await this.programDropdown.press('Enter');
+        await this.page.getByText(program).click();
 
     }
 
     async launchProgram(){
+        await this.launchProgramBtn.waitFor();
         await this.launchProgramBtn.click();
     }
 }
