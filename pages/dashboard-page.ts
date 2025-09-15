@@ -23,7 +23,7 @@ export class DashboardPage{
         this.cropLabel = page.getByText('Crop').describe("Label for crop dropdown list")
         this.cropDropDown = page.locator('[data-test="dashboardCropDropdown"]').getByRole('textbox').describe("Crop Dropdown List");
         this.programLabel = page.getByText('Program', { exact: true }).describe("Label for program dropdown list");
-        this.programDropdown = page.locator('[data-test="dashboardProgramDropdown"]').describe("Program Dropdown List")
+        this.programDropdown = page.locator('[data-test="dashboardProgramDropdown"]').getByRole('textbox').describe("Program Dropdown List")
         this.launchProgramBtn = page.locator('[data-test="launchProgramButton"]').describe('Launch button')
     }
 
