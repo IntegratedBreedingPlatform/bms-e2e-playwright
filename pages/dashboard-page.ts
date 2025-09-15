@@ -21,9 +21,9 @@ export class DashboardPage{
         this.fieldmapMgrBtn = page.getByRole('button', { name: 'Fieldmap Manager' }).describe("Fieldmap Manager button");
         this.addProgramBtn = page.locator('[data-test="addProgramButton"]').describe("Add Program button");
         this.cropLabel = page.getByText('Crop').describe("Label for crop dropdown list")
-        this.cropDropDown = page.locator('[data-test="dashboardCropDropdown"] div').first().describe("Crop Dropdown List");
+        this.cropDropDown = page.locator('[data-test="dashboardCropDropdown"]').getByRole('textbox').describe("Crop Dropdown List");
         this.programLabel = page.getByText('Program', { exact: true }).describe("Label for program dropdown list");
-        this.programDropdown = page.locator('[data-test="dashboardProgramDropdown"] div').first().describe("Program Dropdown List")
+        this.programDropdown = page.locator('[data-test="dashboardProgramDropdown"]').describe("Program Dropdown List")
         this.launchProgramBtn = page.locator('[data-test="launchProgramButton"]').describe('Launch button')
     }
 
@@ -48,16 +48,16 @@ export class DashboardPage{
     async selectCrop(crop: string){
         await expect(this.cropLabel).toBeVisible();
         await expect(this.cropDropDown).toBeVisible();
-        await this.cropDropDown.first().click();
-        await this.page.getByRole('option', { name: crop }).click();
+        await this.cropDropDown.fill(crop);
+        await this.cropDropDown.press('Enter');
 
     }
 
     async selectProgram(program: string){
         await expect(this.programLabel).toBeVisible();
         await expect(this.programDropdown).toBeVisible();
-        await this.programDropdown.click();
-        await this.page.getByText(program).first().click();
+        await this.programDropdown.fill(program);
+        await this.programDropdown.press('Enter');
 
     }
 
