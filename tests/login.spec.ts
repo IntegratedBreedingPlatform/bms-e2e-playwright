@@ -9,6 +9,9 @@ test.describe('Test Login Page',()=>{
         await login.goToLoginPage();
 
         //Enter login credentials
+
+       await page.waitForLoadState('networkidle');
+
         await login.enterUsername("admin");
         await login.enterPassword("@dm1N");
         await login.clickLogin();

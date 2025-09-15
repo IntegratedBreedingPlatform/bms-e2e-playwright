@@ -27,6 +27,14 @@ export class DashboardPage{
         this.launchProgramBtn = page.locator('[data-test="launchProgramButton"]').describe('Launch button')
     }
 
+    private selectCropFromList(crop: string): Locator {
+        return this.page.getByRole('option', { name: crop });
+    }
+
+    private selectProgramFromList(program: string): Locator {
+        return this.page.getByRole('option', { name: program });
+    }
+
     async verifyDashboardURL(){
         await expect(this.page).not.toHaveURL('/app/#/programs/my-studies');
     }
@@ -49,7 +57,7 @@ export class DashboardPage{
         await expect(this.cropLabel).toBeVisible();
         await expect(this.cropDropDown).toBeVisible();
         await this.cropDropDown.fill(crop);
-        await this.page.getByRole('option', { name: crop }).click();
+        await this.selectCropFromList(crop).click();
 
     }
 
@@ -57,7 +65,7 @@ export class DashboardPage{
         await expect(this.programLabel).toBeVisible();
         await expect(this.programDropdown).toBeVisible();
         await this.programDropdown.fill(program);
-        await this.page.getByText(program).click();
+        await this.selectProgramFromList(program).click();
 
     }
 

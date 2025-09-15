@@ -7,7 +7,7 @@ test.describe('Test Dashboard Page',()=>{
     test('verify launching a program',async({page})=>{
         const login = new LoginPage(page);
         await login.goToLoginPage();
-
+        await page.waitForLoadState('networkidle');
         //Enter login credentials
         await login.enterUsername("admin");
         await login.enterPassword("@dm1N");
