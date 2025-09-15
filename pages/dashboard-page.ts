@@ -34,9 +34,11 @@ export class DashboardPage{
     private selectProgramFromList(program: string): Locator {
         return this.page.getByRole('option', { name: program });
     }
-
+    async goToDashboardPage(){
+        await this.page.goto('/ibpworkbench/main/app/#/programs/my-studies');
+    }
     async verifyDashboardURL(){
-        await expect(this.page).not.toHaveURL('/app/#/programs/my-studies');
+        await expect(this.page).not.toHaveURL('/ibpworkbench/main/app/#/programs/my-studies');
     }
     async verifySiteAdminBtn(){
         await expect(this.siteAdminBtn).toBeVisible();

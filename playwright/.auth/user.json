@@ -1,0 +1,35 @@
+{
+  "cookies": [
+    {
+      "name": "BMS_TOK",
+      "value": "YWRtaW46MTc1ODc3Mzk2NDQ1MTpkOWI3NTcyM2M1YzEzNTNhY2EwYjQyNTAzNmM5YjQ2Yg",
+      "domain": "bms-centos-1.leafnode.io",
+      "path": "/ibpworkbench",
+      "expires": 1758773964.022787,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "JSESSIONID",
+      "value": "22C91D9D3F7654EE8B58F4E9042A111C",
+      "domain": "bms-centos-1.leafnode.io",
+      "path": "/ibpworkbench",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Strict"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://bms-centos-1.leafnode.io",
+      "localStorage": [
+        {
+          "name": "bms.xAuthToken",
+          "value": "{\"token\":\"admin:1757931563941:786fc7938fef065cab670695e9b9499f\"}"
+        }
+      ]
+    }
+  ]
+}
