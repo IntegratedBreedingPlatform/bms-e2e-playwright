@@ -18,16 +18,17 @@ export class LoginPage{
     }
 
     async enterUsername(username: string){
-        await expect(this.usernameFld).toBeVisible();
+        await this.usernameFld.waitFor();
         await this.usernameFld.fill(username);
     }
 
      async enterPassword(password: string){
-        await expect(this.passwordFld).toBeVisible();
+        await this.passwordFld.waitFor();
         await this.passwordFld.fill(password);
     }
 
     async clickLogin(){
+        await this.loginBtn.waitFor();
         await this.loginBtn.click();
     }
 
