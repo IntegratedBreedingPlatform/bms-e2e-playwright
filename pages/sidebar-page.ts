@@ -45,8 +45,7 @@ export class SideBarPage{
     }
     async clickSideBarMenu(sidebar: string){
         const sidebarMenu = this.getSidebarMenu(sidebar);
-        await
-        sidebarMenu.click();
+        await sidebarMenu.click();
 
     }
 
