@@ -4,6 +4,7 @@ export class SideBarPage{
 
     private readonly page: Page;
     private readonly pageFrame: FrameLocator;
+    
     constructor(page: Page){
         this.page = page;
         this.pageFrame = this.page.locator('iframe[name="PID_Sbrowser"]').contentFrame();

@@ -75,4 +75,9 @@ export class DashboardPage{
         await this.launchProgramBtn.waitFor();
         await this.launchProgramBtn.click();
     }
+
+    async clickAddProgram(){
+        await this.addProgramBtn.waitFor();
+        await this.addProgramBtn.click();
+    }
 }
