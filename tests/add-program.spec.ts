@@ -11,7 +11,6 @@ test.describe('Test Dashboard Page',()=>{
         const testUserPage = await testUserContext.newPage();
 
         const dashboard = new DashboardPage(testUserPage);
-        const sidebar = new SideBarPage(testUserPage);
         const addProgram = new AddProgramPage(testUserPage);
         await dashboard.goToDashboardPage();
         await dashboard.clickAddProgram();
@@ -21,6 +20,7 @@ test.describe('Test Dashboard Page',()=>{
         await addProgram.selectBreedingLoc('Bulacan');
         await addProgram.selectStorageLoc('Default Seed Store');
         await addProgram.saveProgram();
+        await addProgram.verifySaveProgramSuccess();
 
     });
 });
