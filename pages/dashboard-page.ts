@@ -56,16 +56,16 @@ export class DashboardPage{
     }
 
     async selectCrop(crop: string){
-        await expect(this.cropLabel).toBeVisible();
-        await expect(this.cropDropDown).toBeVisible();
+        await this.cropLabel.waitFor();
+        await this.cropDropDown.waitFor();
         await this.cropDropDown.fill(crop);
         await this.selectCropFromList(crop).click();
 
     }
 
     async selectProgram(program: string){
-        await expect(this.programLabel).toBeVisible();
-        await expect(this.programDropdown).toBeVisible();
+        await this.programLabel.waitFor();
+        await this.programDropdown.waitFor();
         await this.programDropdown.fill(program);
         await this.selectProgramFromList(program).click();
 
