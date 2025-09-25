@@ -19,7 +19,7 @@ export class AddProgramPage{
         this.programBreedingLoc = this.page.locator('#dropdownBreedingLocations').getByRole('textbox').describe('Default Breeding Location list');
         this.programStorageLoc = this.page.locator('#dropdownStorageLocations').getByRole('textbox').describe('Default Program Location list');
         this.saveProgramBtn = this.page.locator('[data-test="saveProgramButton"]').describe('Save Program button');
-        this.saveProgramSuccessMsg = this.page.getByText('The program was created').describe('Save program success message');
+        this.saveProgramSuccessMsg = this.page.locator('div').filter({ hasText: 'The program was created' }).first().describe('Save program success message');
     }
 
     private selectCropFromList(crop: string): Locator {
@@ -69,6 +69,7 @@ export class AddProgramPage{
     }
 
     async verifySaveProgramSuccess(){
-        await expect(this.saveProgramSuccessMsg).toBeVisible;
+        await this.saveProgramSuccessMsg.waitFor();
+        expect(this.saveProgramSuccessMsg).toBeVisible;
     }
 }
