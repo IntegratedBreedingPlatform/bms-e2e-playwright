@@ -27,7 +27,7 @@ test.describe('Test Manage Germplasm Page',()=>{
 
         //Click first GID link
         await testUserPage.pause()
-        //await manageGermplasm.filterByGID('1');
+        await manageGermplasm.filterByGID('1');
         await manageGermplasm.clickGermplasmNameLink('CML8493');
     
 
