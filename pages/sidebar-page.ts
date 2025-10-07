@@ -53,7 +53,7 @@ export class SideBarPage{
     async verifyPageHeading(header: string){
         const pageHeading = this.getPageHeading(header);
         await pageHeading.waitFor()
-        await expect(pageHeading).toBeVisible();
+        await expect(pageHeading, `Verify that page ${header} is loaded successfully`).toBeVisible();
     }
     
     async verifyPageText(text: string){

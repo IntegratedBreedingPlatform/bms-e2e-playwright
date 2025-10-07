@@ -2,32 +2,32 @@
   "cookies": [
     {
       "name": "BMS_TOK",
-      "value": "YWRtaW46MTc1ODc3Mzk2NDQ1MTpkOWI3NTcyM2M1YzEzNTNhY2EwYjQyNTAzNmM5YjQ2Yg",
-      "domain": "bms-centos-1.leafnode.io",
+      "value": "YWRtaW46MTc2MDY2OTU2NTg1MDpmOTNiNjc1MDRiZTM2ZTExMWU1OTg1OGM5NDQwZjNlYg",
+      "domain": "localhost",
       "path": "/ibpworkbench",
-      "expires": 1758773964.022787,
+      "expires": 1760669565.871862,
       "httpOnly": true,
       "secure": true,
-      "sameSite": "Strict"
+      "sameSite": "Lax"
     },
     {
       "name": "JSESSIONID",
-      "value": "22C91D9D3F7654EE8B58F4E9042A111C",
-      "domain": "bms-centos-1.leafnode.io",
+      "value": "A6B5809B643556FDC18133B2A1BD4E75",
+      "domain": "localhost",
       "path": "/ibpworkbench",
       "expires": -1,
       "httpOnly": true,
-      "secure": true,
-      "sameSite": "Strict"
+      "secure": false,
+      "sameSite": "Lax"
     }
   ],
   "origins": [
     {
-      "origin": "https://bms-centos-1.leafnode.io",
+      "origin": "http://localhost:8080",
       "localStorage": [
         {
           "name": "bms.xAuthToken",
-          "value": "{\"token\":\"admin:1757931563941:786fc7938fef065cab670695e9b9499f\"}"
+          "value": "{\"token\":\"admin:1759827165743:3bf867f3b73945137775e104b2fe5920\"}"
         }
       ]
     }

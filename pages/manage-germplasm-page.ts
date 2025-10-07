@@ -22,9 +22,17 @@ export class ManageGermplasmPage{
 
     }
 
+    private getGIDLink(gid: string) : Locator{
+        return this.page.locator(`span[data-test="gidLink-${gid}"]`);   
+    }
+
     async clickGermplasmNameLink(germplasmName: string){
         await this.getGermplasmLink(germplasmName).waitFor();
         await this.getGermplasmLink(germplasmName).click();
+    }
+
+    async clickGIDLink(gid: string){
+        await this.getGIDLink(gid).click();
     }
 
     async filterByGID(gid: string){

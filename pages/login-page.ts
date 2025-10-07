@@ -31,7 +31,6 @@ export class LoginPage{
         await this.loginBtn.waitFor();
         await this.loginBtn.click();
     }
-
     
 
 }

@@ -23,7 +23,7 @@ export default defineConfig({
     actionTimeout: 100000,
     navigationTimeout: 30000,
     trace: 'on-first-retry',
-    baseURL: 'https://bms-centos-1.leafnode.io',
+    baseURL: 'http://localhost:8080',
     screenshot: 'only-on-failure'
   },
   projects: [

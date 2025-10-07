@@ -28,11 +28,11 @@ export class DashboardPage{
     }
 
     private selectCropFromList(crop: string): Locator {
-        return this.page.getByRole('option', { name: crop });
+        return this.page.getByRole('option', { name: crop }).first();
     }
 
     private selectProgramFromList(program: string): Locator {
-        return this.page.getByRole('option', { name: program });
+        return this.page.getByRole('option', { name: program }).first();
     }
     async goToDashboardPage(){
         await this.page.goto('/ibpworkbench/main/app/#/programs/my-studies');

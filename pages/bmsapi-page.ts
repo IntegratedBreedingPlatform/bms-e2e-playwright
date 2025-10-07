@@ -14,6 +14,6 @@ export class BMSAPIPage{
     }
 
     async verifyBMSAPIHeading(){
-        await expect(this.bmsapiHeading).toBeVisible();
+        await expect(this.bmsapiHeading, 'Verify that BMSAPI is loaded successfully').toBeVisible();
     }
 }
