@@ -38,21 +38,20 @@ export class DashboardPage{
         await this.page.goto('/ibpworkbench/main/app/#/programs/my-studies');
     }
     async verifyDashboardURL(){
-        await expect(this.page).not.toHaveURL('/ibpworkbench/main/app/#/programs/my-studies');
+        await expect(this.page, 'Verify that the current page is Dashboard').toHaveURL('ibpworkbench/main/app/#/programs/my-studies');
     }
     async verifySiteAdminBtn(){
-        await expect(this.siteAdminBtn).toBeVisible();
-
+        await expect(this.siteAdminBtn, 'Verify that Site Admin button is visible').toBeVisible();
     }
     async verifyMyProgramsBtn(){ 
-        await expect(this.myProgramsBtn).toBeVisible();
+        await expect(this.myProgramsBtn, 'Verify that My Programs button is visible').toBeVisible();
     }
 
     async verifyFieldmapManagerBtn(){
-        await expect(this.fieldmapMgrBtn).toBeVisible();
+        await expect(this.fieldmapMgrBtn, 'Verify that Fieldmap Manager button is visible').toBeVisible();
     }
     async verifyAddProgramBtn(){
-        await expect(this.addProgramBtn).toBeVisible();
+        await expect(this.addProgramBtn, 'Verify that Add Program is visible').toBeVisible();
     }
 
     async selectCrop(crop: string){

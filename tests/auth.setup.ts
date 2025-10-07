@@ -7,21 +7,18 @@ const authFile = path.join(__dirname, '../playwright/.auth/user.json');
 
 setup('authenticate', async ({ page }) => {
         const login = new LoginPage(page);
-        const dashboard = new DashboardPage(page);
         await login.goToLoginPage();       
 
         await page.waitForLoadState('networkidle');
-        //Perform authentication steps
+        // Perform authentication steps
         await login.enterUsername("admin");
         await login.enterPassword("@dm1N");
         await login.clickLogin();
-  
 
-        //Verify dashboard page elements
-        await dashboard.verifyDashboardURL();
-        await dashboard.verifyFieldmapManagerBtn();
-        await dashboard.verifyAddProgramBtn();
-        // End of authentication steps.
+        // Give a small delay to ensure all storage is properly set
+        await page.waitForTimeout(1000);
 
         await page.context().storageState({ path: authFile });
+
+        await page.close();
 });

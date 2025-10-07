@@ -2,17 +2,17 @@
   "cookies": [
     {
       "name": "BMS_TOK",
-      "value": "YWRtaW46MTc2MDY2OTU2NTg1MDpmOTNiNjc1MDRiZTM2ZTExMWU1OTg1OGM5NDQwZjNlYg",
+      "value": "YWRtaW46MTc2MDY4MTgyNDIyMToxOGRiMTc4ZTcwN2Y3ZjRhNmI5N2U2MmYyNGNhMjdhNw",
       "domain": "localhost",
       "path": "/ibpworkbench",
-      "expires": 1760669565.871862,
+      "expires": 1760681824.240897,
       "httpOnly": true,
       "secure": true,
       "sameSite": "Lax"
     },
     {
       "name": "JSESSIONID",
-      "value": "A6B5809B643556FDC18133B2A1BD4E75",
+      "value": "A213BA1956B3AADEF3DDCA50E2349EFB",
       "domain": "localhost",
       "path": "/ibpworkbench",
       "expires": -1,
@@ -27,7 +27,7 @@
       "localStorage": [
         {
           "name": "bms.xAuthToken",
-          "value": "{\"token\":\"admin:1759827165743:3bf867f3b73945137775e104b2fe5920\"}"
+          "value": "{\"token\":\"admin:1759839424105:7ab36818ad063ff760de1187b37f3ff6\"}"
         }
       ]
     }

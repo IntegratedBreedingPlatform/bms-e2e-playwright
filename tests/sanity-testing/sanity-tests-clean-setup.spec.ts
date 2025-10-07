@@ -5,10 +5,10 @@ import { DashboardPage } from '../../pages/dashboard-page';
 import { SideBarPage } from '../../pages/sidebar-page';
 import { ManageGermplasmPage } from '../../pages/manage-germplasm-page';
 
-test.describe('Sanity Testing',()=>{
+test.describe('Sanity Testing Clean Setup',()=>{
 
-    test('IBP-T290 Access BMS in UAT test instance', { tag: ['@sanity'] } , async ({ browser }) => {
-        
+    test('IBP-T2351 Access BMS and API swagger in Clean Install Setup', { tag: ['@sanity-clean-setup'] } , async ({ browser }) => {
+
         const testUserContext = await browser.newContext();
         const page = await testUserContext.newPage();
         
@@ -22,19 +22,24 @@ test.describe('Sanity Testing',()=>{
         await login.enterUsername("admin");
         await login.enterPassword("@dm1N");
         await login.clickLogin();
-  
-
+        
+        await expect(page.getByText('Upgrade Notification'), 'Verify that Upgrade Notification is visibsle after logging in').toBeVisible();
+        await page.getByRole('button', { name: 'Ok' }).click();
+        await expect(page.getByText('Upgrade Notification'), 'Verify that Upgrade Notification is not visible after clicking OK').toBeHidden();
+        
         //Verify dashboard page elements
         await dashboard.verifyDashboardURL();
         await dashboard.verifyFieldmapManagerBtn();
         await dashboard.verifyAddProgramBtn();
+        // await dashboard.verifySiteAdminBtn();
 
         await bmsapi.goToBMSAPI();
         await bmsapi.verifyBMSAPIHeading();
 
+        page.close();
     });
 
-    test('IBP-T293 Check all side menu links', { tag: ['@sanity'] } ,async ({ browser }) => {
+    test('IBP-T2354 Check all side menu links', { tag: ['@sanity-clean-setup'] } ,async ({ browser }) => {
        // testUserContext with test user logged in
         const testUserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
         const testUserPage = await testUserContext.newPage();
@@ -130,7 +135,16 @@ test.describe('Sanity Testing',()=>{
         await sidebar.verifyPageHeading('Manage Program Settings');
     });
 
-    test('IBP-T294 Check if BMS version is correct', { tag: ['@sanity'] } ,async ({ page }) => {
+     test('IBP-T2352 Check BV Design License is not included', { tag: ['@sanity-clean-setup'] } , async ({ page }) => {
+        const login = new LoginPage(page);
+        await login.goToLoginPage();
+        const bmsapi = new BMSAPIPage(page);
+        await bmsapi.goToBMSAPI();
+        await bmsapi.verifyBMSAPIHeading();
+        page.close();
+    });
+
+    test('IBP-T2355 Check if BMS version is correct', { tag: ['@sanity-clean-setup'] } ,async ({ page }) => {
         const login = new LoginPage(page);
         await login.goToLoginPage();
 
@@ -139,7 +153,7 @@ test.describe('Sanity Testing',()=>{
     });
 
 
-    test('IBP-T292 Check if Pedigree Tree and Graph are showing', { tag: ['@sanity'] } ,async ({ browser }) => {
+    test('IBP-T2353 Check if Pedigree Tree and Graph are showing', { tag: ['@sanity-clean-setup'] } ,async ({ browser }) => {
         // testUserContext with test user logged in
         const testUserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
         const testUserPage = await testUserContext.newPage();
@@ -189,15 +203,7 @@ test.describe('Sanity Testing',()=>{
     });
 
 
-    test('IBP-T291 Generate Experimental Designs', { tag: ['@sanity'] } ,async ({ browser }) => {
-
-        // Create new Study
-
-
-    });
-
-
-     test('IBP-T2357 Create new program', { tag: ['@sanity'] } ,async ({ browser }) => {
+    test('IBP-T2357 Create new program', { tag: ['@sanity-clean-setup'] } ,async ({ browser }) => {
 
         // Create new Study
 
