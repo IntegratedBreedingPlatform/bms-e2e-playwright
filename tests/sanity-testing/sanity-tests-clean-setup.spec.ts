@@ -4,6 +4,7 @@ import { LoginPage } from '../../pages/login-page';
 import { DashboardPage } from '../../pages/dashboard-page';
 import { SideBarPage } from '../../pages/sidebar-page';
 import { ManageGermplasmPage } from '../../pages/manage-germplasm-page';
+import { AddProgramPage } from '../../pages/add-program-page';
 
 test.describe('Sanity Testing Clean Setup',()=>{
 
@@ -78,32 +79,32 @@ test.describe('Sanity Testing Clean Setup',()=>{
         await sidebar.clickSideBarMenu('Import Datasets');
         await sidebar.verifyFrameText('Dataset Importer');
 
-        //Check SSA Page
+        // Check SSA Page
         await sidebar.expandSidebarTree('Studies');
         await sidebar.clickSideBarMenu('Single-Site Analysis');
         await sidebar.verifyPageText('SINGLE-SITE ANALYSIS');
 
-        //Check MSA Page
+        // Check MSA Page
         await sidebar.expandSidebarTree('Studies');
         await sidebar.clickSideBarMenu('Multi-Site Analysis');
         await sidebar.verifyPageText('MULTI-SITE ANALYSIS');
     
-        //Check Manage Inventory Page
+        // Check Manage Inventory Page
         await sidebar.expandSidebarTree('Inventory');
         await sidebar.clickSideBarMenu('Manage Inventory');
         await sidebar.verifyPageHeading('Manage Inventory');
 
-        //Check Graphical Query Page
+        // Check Graphical Query Page
         await sidebar.expandSidebarTree('Queries');
         await sidebar.clickSideBarMenu('Graphical Queries');
         await sidebar.verifyFrameHeading('BrAPI Graphical Queries');
 
-        //Check Head to Head Query Page
+        // Check Head to Head Query Page
         await sidebar.expandSidebarTree('Queries');
         await sidebar.clickSideBarMenu('Head to Head Query');
         await sidebar.verifyPageText('MAIN HEAD TO HEAD QUERY');
 
-        //Check Multi-Trait Query Page
+        // Check Multi-Trait Query Page
         await sidebar.expandSidebarTree('Queries');
         await sidebar.clickSideBarMenu('Multi-Trait Query');
         await sidebar.verifyPageText('MULTI-TRAIT QUERY');
@@ -202,12 +203,25 @@ test.describe('Sanity Testing Clean Setup',()=>{
         // });
     });
 
+    test('IBP-T2357 Create new program', { tag: ['@sanity-clean-setup'] } , async ({ browser }) => {
 
-    test('IBP-T2357 Create new program', { tag: ['@sanity-clean-setup'] } ,async ({ browser }) => {
+         // testUserContext with test user logged in
+        const context = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
+        const page = await context.newPage();
+        const dashboard = new DashboardPage(page);
+        const addProgramPage = new AddProgramPage(page);
+       
+        await test.step('Go to Dashboard page and click Add Program', async() => {
+            await dashboard.goToDashboardPage();
+            await dashboard.clickAddProgram();
+        });
 
-        // Create new Study
-
+        await test.step('Create a new program', async() => {
+             await addProgramPage.createNewProgram();
+        });
+       
 
     });
+
 
 });

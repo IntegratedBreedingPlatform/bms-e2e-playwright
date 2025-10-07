@@ -38,7 +38,7 @@ export class DashboardPage{
         await this.page.goto('/ibpworkbench/main/app/#/programs/my-studies');
     }
     async verifyDashboardURL(){
-        await expect(this.page, 'Verify that the current page is Dashboard').toHaveURL('ibpworkbench/main/app/#/programs/my-studies');
+        await expect(this.page, 'Verify that the current page is Dashboard').toHaveURL('/ibpworkbench/main/app/#/programs/my-studies');
     }
     async verifySiteAdminBtn(){
         await expect(this.siteAdminBtn, 'Verify that Site Admin button is visible').toBeVisible();

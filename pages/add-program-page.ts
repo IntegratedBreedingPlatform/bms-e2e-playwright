@@ -1,4 +1,5 @@
 import {expect,Page, Locator} from '@playwright/test';
+import { generateRandomString } from './utilities';
 
 export class AddProgramPage{
     private readonly page: Page;
@@ -8,8 +9,6 @@ export class AddProgramPage{
     private readonly programBreedingLoc: Locator;
     private readonly programStorageLoc: Locator;
     private readonly saveProgramBtn: Locator;
-    private readonly saveProgramSuccessMsg: Locator;
-
 
     constructor(page: Page){
         this.page = page;
@@ -19,7 +18,6 @@ export class AddProgramPage{
         this.programBreedingLoc = this.page.locator('#dropdownBreedingLocations').getByRole('textbox').describe('Default Breeding Location list');
         this.programStorageLoc = this.page.locator('#dropdownStorageLocations').getByRole('textbox').describe('Default Program Location list');
         this.saveProgramBtn = this.page.locator('[data-test="saveProgramButton"]').describe('Save Program button');
-        this.saveProgramSuccessMsg = this.page.locator('div').filter({ hasText: 'The program was created' }).first().describe('Save program success message');
     }
 
     private selectCropFromList(crop: string): Locator {
@@ -68,8 +66,21 @@ export class AddProgramPage{
         await this.saveProgramBtn.click();
     }
 
-    async verifySaveProgramSuccess(){
-        await this.saveProgramSuccessMsg.waitFor();
-        expect(this.saveProgramSuccessMsg).toBeVisible;
+    async verifySaveProgramSuccess() {
+        const saveProgramSuccessMsg = this.page.locator('div').filter({ hasText: 'The program was created' }).first().describe('Save program success message');
+        expect(saveProgramSuccessMsg, 'Verify that program is saved successfully').toBeVisible;
     }
+
+     async createNewProgram() {
+        await this.selectCrop('maize');
+        await this.enterProgramName(`TEST PROGRAM [${generateRandomString(20)}]`);
+        await this.enterStartDate('2025-09-19');
+        await this.selectBreedingLoc('Bulacan');
+        await this.selectStorageLoc('Default Seed Store');
+        await this.saveProgram();
+        await this.verifySaveProgramSuccess();
+        await this.page.waitForLoadState('networkidle');
+    }
+   
+    
 }
