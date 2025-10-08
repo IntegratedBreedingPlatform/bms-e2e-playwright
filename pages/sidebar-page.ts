@@ -1,4 +1,5 @@
 import {expect,Page, Locator,FrameLocator} from '@playwright/test';
+import {SidebarMenu, SidebarSection} from "./app.constants";
 
 export class SideBarPage{
 
@@ -10,11 +11,11 @@ export class SideBarPage{
         this.pageFrame = this.page.locator('iframe[name="PID_Sbrowser"]').contentFrame();
     }
     
-    private getSidebarGroup(sidebar:string): Locator{
-        return this.page.getByRole('treeitem', { name: sidebar, level: 1 });
+    private getSidebarSection(sidebarSection: SidebarSection): Locator{
+        return this.page.getByRole('treeitem', { name: sidebarSection, level: 1 });
     }
 
-    private getSidebarMenu(sidebarMenu:string): Locator{
+    private getSidebarMenu(sidebarMenu: SidebarMenu): Locator{
         return this.page.getByRole('treeitem', { name: sidebarMenu, level:2 });
     }
     
@@ -33,8 +34,8 @@ export class SideBarPage{
         return this.pageFrame.getByText(text);
     }
 
-    async expandSidebarTree(sidebar: string){
-        const sidebarTree = this.getSidebarGroup(sidebar);
+    async expandSidebarTree(sidebar: SidebarSection){
+        const sidebarTree = this.getSidebarSection(sidebar);
         const isExpanded = await sidebarTree.getAttribute('aria-expanded');
         // Conditionally click the item to expand it if it is not already expanded
         if (isExpanded === 'false') {
@@ -44,10 +45,9 @@ export class SideBarPage{
             console.log('The documents tree item is already expanded.');
         }
     }
-    async clickSideBarMenu(sidebar: string){
-        const sidebarMenu = this.getSidebarMenu(sidebar);
-        await sidebarMenu.click();
-
+    async clickSideBarMenu(sidebarMenu: SidebarMenu){
+        const sidebarMenuItem = this.getSidebarMenu(sidebarMenu);
+        await sidebarMenuItem.click();
     }
 
     async verifyPageHeading(header: string){
