@@ -36,6 +36,7 @@ export class DashboardPage{
     }
     async goToDashboardPage(){
         await this.page.goto('/ibpworkbench/main/app/#/programs/my-studies');
+        await this.page.waitForLoadState('networkidle');
     }
     async verifyDashboardURL(){
         await expect(this.page, 'Verify that the current page is Dashboard').toHaveURL('/ibpworkbench/main/app/#/programs/my-studies');

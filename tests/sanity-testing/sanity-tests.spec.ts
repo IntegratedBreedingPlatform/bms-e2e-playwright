@@ -221,7 +221,25 @@ test.describe('Sanity Testing',()=>{
 
     test('IBP-T291 Generate Experimental Designs', { tag: ['@sanity'] } ,async ({ browser }) => {
 
-        // Create new Study
+        // const context = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
+        // const page = await context.newPage();
+        // const dashboard = new DashboardPage(page);
+        // const addProgramPage = new AddProgramPage(page);
+        // const sidebarPage = new SideBarPage(page);
+
+        // let newProgram = '';
+        
+        // await test.step('Go to Dashboard page and click Add Program', async() => {
+        //     await dashboard.goToDashboardPage();
+        //     await dashboard.clickAddProgram();
+        // });
+
+        // await test.step('Create a new program', async() => {
+        //     newProgram = await addProgramPage.createNewProgram();
+        // });
+
+        // await sidebarPage.verifyPageHeading('Manage Program Settings');
+        // await sidebarPage.clickSideBarMenu()
 
 
     });
@@ -233,6 +251,9 @@ test.describe('Sanity Testing',()=>{
         const page = await context.newPage();
         const dashboard = new DashboardPage(page);
         const addProgramPage = new AddProgramPage(page);
+        const sidebarPage = new SideBarPage(page);
+
+        let newProgram = '';
         
         await test.step('Go to Dashboard page and click Add Program', async() => {
             await dashboard.goToDashboardPage();
@@ -240,9 +261,15 @@ test.describe('Sanity Testing',()=>{
         });
 
         await test.step('Create a new program', async() => {
-            await addProgramPage.createNewProgram();
+            newProgram = await addProgramPage.createNewProgram();
         });
 
+        await sidebarPage.verifyPageHeading('Manage Program Settings');
+
+        await test.step('Go to Dashboard page and verify that the. new program is selectable', async() => {
+            await dashboard.goToDashboardPage();
+            await dashboard.selectProgram(newProgram);
+        });
 
     });
 

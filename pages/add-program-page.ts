@@ -1,5 +1,6 @@
 import {expect,Page, Locator} from '@playwright/test';
 import { generateRandomString } from './utilities';
+import { TEST_BREEDING_LOCATION, TEST_CROP, TEST_PROGRAM_NAME, TEST_STORAGE_LOCATION } from './app.constants';
 
 export class AddProgramPage{
     private readonly page: Page;
@@ -72,14 +73,21 @@ export class AddProgramPage{
     }
 
      async createNewProgram() {
-        await this.selectCrop('maize');
-        await this.enterProgramName(`TEST PROGRAM [${generateRandomString(20)}]`);
-        await this.enterStartDate('2025-09-19');
-        await this.selectBreedingLoc('Bulacan');
-        await this.selectStorageLoc('Default Seed Store');
+
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0];
+        const program = `${TEST_PROGRAM_NAME} - [${generateRandomString(10)}]`;
+
+        await this.selectCrop(TEST_CROP);
+        await this.enterProgramName(program);
+        await this.enterStartDate(formattedDate);
+        await this.selectBreedingLoc(TEST_BREEDING_LOCATION);
+        await this.selectStorageLoc(TEST_STORAGE_LOCATION);
         await this.saveProgram();
         await this.verifySaveProgramSuccess();
         await this.page.waitForLoadState('networkidle');
+
+        return program;
     }
    
     
