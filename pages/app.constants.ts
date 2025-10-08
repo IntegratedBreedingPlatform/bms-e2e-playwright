@@ -4,6 +4,8 @@ export const TEST_STORAGE_LOCATION = 'Default Seed Store';
 export const TEST_BREEDING_LOCATION = 'Philippines';
 export const AUTO_GENERATED_TEXT = '(Auto-generated)';
 
+export const TEST_GERMPLASM_LIST_NAME = 'Test Germplasm List';
+
 export enum SidebarMenu {
     // Germplasm section
     MANAGE_GERMPLASM = 'Manage Germplasm',

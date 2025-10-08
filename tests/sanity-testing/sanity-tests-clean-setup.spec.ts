@@ -3,7 +3,7 @@ import { BMSAPIPage } from '../../pages/bmsapi-page';
 import { LoginPage } from '../../pages/login-page';
 import { DashboardPage } from '../../pages/dashboard-page';
 import { SideBarPage } from '../../pages/sidebar-page';
-import { ManageGermplasmPage } from '../../pages/manage-germplasm-page';
+import { GermplasmManagerPage } from '../../pages/germplasm-manager-page';
 import { AddProgramPage } from '../../pages/add-program-page';
 
 test.describe('Sanity Testing Clean Setup',()=>{
@@ -161,7 +161,7 @@ test.describe('Sanity Testing Clean Setup',()=>{
 
         const dashboard = new DashboardPage(testUserPage); 
         const sidebar = new SideBarPage(testUserPage);
-        const manageGermplasm = new ManageGermplasmPage(testUserPage);
+        const manageGermplasm = new GermplasmManagerPage(testUserPage);
 
         //Go to Dashboard and launch a program
         await dashboard.goToDashboardPage();

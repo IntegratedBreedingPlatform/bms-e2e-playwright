@@ -1,5 +1,5 @@
 import {expect,Page, Locator} from '@playwright/test';
-import { generateRandomString } from './utilities';
+import { generateRandomString, getFormattedDateYYY_MM_DD } from './utilities';
 import { TEST_BREEDING_LOCATION, TEST_CROP, TEST_PROGRAM_NAME, TEST_STORAGE_LOCATION } from './app.constants';
 
 export class AddProgramPage{
@@ -74,8 +74,7 @@ export class AddProgramPage{
 
      async createNewProgram() {
 
-        const today = new Date();
-        const formattedDate = today.toISOString().split('T')[0];
+        const formattedDate = getFormattedDateYYY_MM_DD();
         const program = `${TEST_PROGRAM_NAME} - [${generateRandomString(10)}]`;
 
         await this.selectCrop(TEST_CROP);

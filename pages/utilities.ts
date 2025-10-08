@@ -7,3 +7,10 @@ export function generateRandomString(length: number): string {
     }
     return result;
 }
+
+
+export function getFormattedDateYYY_MM_DD() {
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0];
+    return formattedDate;
+}

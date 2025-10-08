@@ -1,6 +1,6 @@
 import {expect,Page, Locator} from '@playwright/test';
 
-export class ManageGermplasmPage{
+export class GermplasmManagerPage {
 
     private readonly page: Page;
     private readonly gidFilter: Locator;
@@ -43,5 +43,17 @@ export class ManageGermplasmPage{
         await this.gidFilterApplyBtn.waitFor();
         await this.gidFilterApplyBtn.click();
 
+    }
+
+    async selectAllCurrentPage() {
+        await this.page.locator('[data-test="checkSelectCurrentPage"]').check();
+    }
+
+    async clickActionsButton() {
+        await this.page.getByRole('button', { name: 'Actions' }).click();
+    }
+
+    async clickActionsMenuButton(name: 'Create new list') {
+        await this.page.getByRole('button', { name: name }).click();
     }
 }

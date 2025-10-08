@@ -3,9 +3,12 @@ import {BMSAPIPage} from '../../pages/bmsapi-page';
 import {LoginPage} from '../../pages/login-page';
 import {DashboardPage} from '../../pages/dashboard-page';
 import {SideBarPage} from '../../pages/sidebar-page';
-import {ManageGermplasmPage} from '../../pages/manage-germplasm-page';
+import {GermplasmManagerPage} from '../../pages/germplasm-manager-page';
 import {AddProgramPage} from '../../pages/add-program-page';
 import {SidebarMenu, SidebarSection, TEST_CROP} from "../../pages/app.constants";
+import {SaveGermplasmListModalPage} from "../../pages/save-germplasm-list-modal-page";
+import { ManageStudiesPage } from '../../pages/study-manager/manage-studies-page';
+import { CreateNewStudyPage } from '../../pages/study-manager/create-new-study-page';
 
 test.describe('Sanity Testing',()=>{
 
@@ -34,7 +37,7 @@ test.describe('Sanity Testing',()=>{
         });
        
         await test.step('Verify BMSAPI is loading correctly', async() => {
-             await bmsapi.goToBMSAPI();
+            await bmsapi.goToBMSAPI();
             await bmsapi.verifyBMSAPIHeading();
         });
 
@@ -62,9 +65,8 @@ test.describe('Sanity Testing',()=>{
 
         await sidebarPage.verifyPageHeading('Manage Program Settings');
 
-        await dashboard.goToDashboardPage();
-
         await test.step('Launch an existing program', async() => {
+            await dashboard.goToDashboardPage();
             await dashboard.selectCrop(TEST_CROP);
             await dashboard.selectProgram(newProgram);
             await dashboard.launchProgram();
@@ -191,7 +193,7 @@ test.describe('Sanity Testing',()=>{
 
         const dashboard = new DashboardPage(page);
         const sidebar = new SideBarPage(page);
-        const manageGermplasm = new ManageGermplasmPage(page);
+        const manageGermplasm = new GermplasmManagerPage(page);
 
 
         await test.step('Go to Dashboard and launch a program', async() => {
@@ -224,39 +226,76 @@ test.describe('Sanity Testing',()=>{
         await expect(page.getByRole('heading', { name: 'Pedigree Graph' }), 'Verify that Pedigree Graph is displayed').toBeVisible();
         await expect(page.locator('polygon').first(), 'Verify that at least one polygon is visible').toBeVisible();
 
-    
-        // // Keep browser open and handle manual close
-        // await new Promise((resolve) => {
-        //     process.on('SIGINT', async () => {
-        //     await browser.close();
-        //     resolve(true);
-        //     });
-        // });
-    });
 
+    });
 
     test('IBP-T291 Generate Experimental Designs', { tag: ['@sanity'] } ,async ({ browser }) => {
 
-        // const context = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
-        // const page = await context.newPage();
-        // const dashboard = new DashboardPage(page);
-        // const addProgramPage = new AddProgramPage(page);
-        // const sidebarPage = new SideBarPage(page);
+        const context = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
+        const page = await context.newPage();
+        const dashboard = new DashboardPage(page);
+        const addProgramPage = new AddProgramPage(page);
+        const sidebarPage = new SideBarPage(page);
+        const germplasmManagerPage = new GermplasmManagerPage(page);
+        const manageStudiesPage = new ManageStudiesPage(page);
+        const createNewStudyPage = new CreateNewStudyPage(page)
 
-        // let newProgram = '';
+        let newProgram = '';
         
-        // await test.step('Go to Dashboard page and click Add Program', async() => {
-        //     await dashboard.goToDashboardPage();
-        //     await dashboard.clickAddProgram();
-        // });
+        await test.step('Go to Dashboard page and click Add Program', async() => {
+            await dashboard.goToDashboardPage();
+            await dashboard.clickAddProgram();
+        });
 
-        // await test.step('Create a new program', async() => {
-        //     newProgram = await addProgramPage.createNewProgram();
-        // });
+        await test.step('Create a new program', async() => {
+            newProgram = await addProgramPage.createNewProgram();
+        });
 
-        // await sidebarPage.verifyPageHeading('Manage Program Settings');
-        // await sidebarPage.clickSideBarMenu()
+        await sidebarPage.verifyPageHeading('Manage Program Settings');
 
+        await test.step('Launch an existing program', async() => {
+            await dashboard.goToDashboardPage();
+            await dashboard.selectCrop(TEST_CROP);
+            await dashboard.selectProgram(newProgram);
+            await dashboard.launchProgram();
+        });
+
+        await test.step('Navigate to Germplasm Manager page', async() => {
+            await sidebarPage.expandSidebarTree(SidebarSection.GERMPLASM);
+            await sidebarPage.clickSideBarMenu(SidebarMenu.MANAGE_GERMPLASM);
+            await sidebarPage.verifyPageHeading('Germplasm Manager');
+        });
+
+
+        await test.step('Select all germplasm in the page and Create a new list', async() => {
+            await germplasmManagerPage.selectAllCurrentPage();
+            await germplasmManagerPage.clickActionsButton();
+            await germplasmManagerPage.clickActionsMenuButton('Create new list');
+        });
+
+        const saveGermplasmListModal = new SaveGermplasmListModalPage(page);
+        let listName = '';
+        await test.step('Create a new list to be used for creating a new study', async() => {
+            await saveGermplasmListModal.verifyModalIsVisible();
+            listName = await saveGermplasmListModal.createNewList();
+        });
+        
+        await test.step('Navigate to Manage Studies page', async() => {
+            await sidebarPage.expandSidebarTree(SidebarSection.STUDIES);
+            await sidebarPage.clickSideBarMenu(SidebarMenu.MANAGE_STUDIES);
+            await sidebarPage.verifyPageHeading('Manage Studies');
+        });
+
+        await test.step('Go to create new study', async() => {
+           await manageStudiesPage.clickStartNewStudy();
+        });
+
+        let studyName;
+        await test.step('Create a new study', async() => {
+           await createNewStudyPage.verifyCreateStudyIsVisible();
+           studyName = await createNewStudyPage.createNewStudy();
+        });
+    
 
     });
 
