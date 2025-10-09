@@ -10,6 +10,8 @@ import {SaveGermplasmListModalPage} from "../../pages/save-germplasm-list-modal-
 import {ManageStudiesPage} from '../../pages/study-manager/manage-studies-page';
 import {CreateNewStudyPage} from '../../pages/study-manager/create-new-study-page';
 import {StudyEditorPage} from "../../pages/study-manager/study-editor-page";
+import {GenerateDesignModalPage} from "../../pages/study-manager/modals/generate-design-modal-page";
+import {GenerateDesignConfirmModalPage} from "../../pages/study-manager/modals/generate-design-confim-modal-page";
 
 // Declare the types of the common pages.
 type BMSPages = {
@@ -261,8 +263,7 @@ test.describe('Sanity Testing',()=>{
          });
     
     });
-
-
+    
     test('IBP-T292 Check if Pedigree Tree and Graph are showing', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, sidebar, germplasmManager }) => {
 
         await login.authenticate();
@@ -387,6 +388,19 @@ test.describe('Sanity Testing',()=>{
            await studyEditor.fillStartingPlotNumber('1');
            await studyEditor.fillNumberOfReplications('12');
            await studyEditor.clickGenerateDesign();
+       });
+
+       await test.step('Select all environments and generate design', async() => {
+           const generateDesignModal = new GenerateDesignModalPage(page);
+           await generateDesignModal.isVisible();
+           await generateDesignModal.selectAll();
+           await generateDesignModal.generate();
+       });
+
+       await test.step('Confirm Additional Design Details', async() => {
+           const generateDesignConfirmModalPage = new GenerateDesignConfirmModalPage(page);
+           await generateDesignConfirmModalPage.isVisible();
+           await generateDesignConfirmModalPage.clickYes();
        });
 
     });
