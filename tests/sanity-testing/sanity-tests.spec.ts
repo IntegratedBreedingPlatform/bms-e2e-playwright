@@ -1,17 +1,17 @@
-import {expect, test as base} from '@playwright/test';
-import {BMSAPIPage} from '../../pages/bmsapi-page';
-import {LoginPage} from '../../pages/login-page';
-import {DashboardPage} from '../../pages/dashboard-page';
-import {SideBarPage} from '../../pages/sidebar-page';
-import {GermplasmManagerPage} from '../../pages/germplasm-manager-page';
-import {AddProgramPage} from '../../pages/add-program-page';
-import {DesignType, SidebarMenu, SidebarSection, TEST_CROP} from "../../pages/app.constants";
-import {SaveGermplasmListModalPage} from "../../pages/save-germplasm-list-modal-page";
-import {ManageStudiesPage} from '../../pages/study-manager/manage-studies-page';
-import {CreateNewStudyPage} from '../../pages/study-manager/create-new-study-page';
-import {StudyEditorPage} from "../../pages/study-manager/study-editor-page";
-import {GenerateDesignModalPage} from "../../pages/study-manager/modals/generate-design-modal-page";
-import {GenerateDesignConfirmModalPage} from "../../pages/study-manager/modals/generate-design-confim-modal-page";
+import { expect, test as base } from '@playwright/test';
+import { BMSAPIPage } from '../../pages/bmsapi-page';
+import { LoginPage } from '../../pages/login-page';
+import { DashboardPage } from '../../pages/dashboard-page';
+import { SideBarPage } from '../../pages/sidebar-page';
+import { GermplasmManagerPage } from '../../pages/germplasm-manager-page';
+import { AddProgramPage } from '../../pages/add-program-page';
+import { DesignType, SidebarMenu, SidebarSection, TEST_CROP } from '../../pages/app.constants';
+import { SaveGermplasmListModalPage } from '../../pages/save-germplasm-list-modal-page';
+import { ManageStudiesPage } from '../../pages/study-manager/manage-studies-page';
+import { CreateNewStudyPage } from '../../pages/study-manager/create-new-study-page';
+import { StudyEditorPage } from '../../pages/study-manager/study-editor-page';
+import { GenerateDesignModalPage } from '../../pages/study-manager/modals/generate-design-modal-page';
+import { GenerateDesignConfirmModalPage } from '../../pages/study-manager/modals/generate-design-confim-modal-page';
 
 // Declare the types of the common pages.
 type BMSPages = {
@@ -109,17 +109,17 @@ test.describe('Sanity Testing',()=>{
         await page.waitForLoadState('networkidle');
 
         await test.step('Login using admin credentials', async() => {
-            await login.fillUsername("admin");
-            await login.fillPassword("@dm1N");
+            await login.fillUsername('admin');
+            await login.fillPassword('@dm1N');
             await login.clickLogin();
         });
-       
+
         await test.step('Verify dashboard page elements', async() => {
             await dashboard.verifyDashboardURL();
             await dashboard.verifyFieldmapManagerBtn();
             await dashboard.verifyAddProgramBtn();
         });
-       
+
         await test.step('Verify BMSAPI is loading correctly', async() => {
             await bmsapi.goto();
             await bmsapi.verifyBMSAPIHeading();
@@ -156,7 +156,7 @@ test.describe('Sanity Testing',()=>{
             await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_GERMPLASM);
             await sidebar.verifyPageHeading('Germplasm Manager');
         });
-       
+
         await test.step('Navigate to Germplasm List/List Manager page', async() => {
             await sidebar.expandSidebarTree(SidebarSection.LISTS);
             await sidebar.clickSideBarMenu(SidebarMenu.GERMPLASM_LISTS);
@@ -170,7 +170,7 @@ test.describe('Sanity Testing',()=>{
         });
 
         await test.step('Navigate to Manage Studies page', async() => {
-           await sidebar.expandSidebarTree(SidebarSection.STUDIES);
+            await sidebar.expandSidebarTree(SidebarSection.STUDIES);
             await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_STUDIES);
             await sidebar.verifyPageHeading('Manage Studies');
         });
@@ -180,13 +180,13 @@ test.describe('Sanity Testing',()=>{
             await sidebar.clickSideBarMenu(SidebarMenu.IMPORT_DATASETS);
             await sidebar.verifyFrameText('Dataset Importer');
         });
-       
+
         await test.step('Navigate to Single Site Analysis page', async() => {
             await sidebar.expandSidebarTree(SidebarSection.STUDIES);
             await sidebar.clickSideBarMenu(SidebarMenu.SINGLE_SITE_ANALYSIS);
             await sidebar.verifyPageText('SINGLE-SITE ANALYSIS');
         });
-       
+
         await test.step('Navigate to Multi Site Analysis page', async() => {
             await sidebar.expandSidebarTree(SidebarSection.STUDIES);
             await sidebar.clickSideBarMenu(SidebarMenu.MULTI_SITE_ANALYSIS);
@@ -198,7 +198,7 @@ test.describe('Sanity Testing',()=>{
             await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_INVENTORY);
             await sidebar.verifyPageHeading('Manage Inventory');
         });
-    
+
         await test.step('Navigate to Graphical Queries page', async() => {
             await sidebar.expandSidebarTree(SidebarSection.QUERIES);
             await sidebar.clickSideBarMenu(SidebarMenu.GRAPHICAL_QUERIES);
@@ -216,28 +216,28 @@ test.describe('Sanity Testing',()=>{
             await sidebar.expandSidebarTree(SidebarSection.QUERIES);
             await sidebar.clickSideBarMenu(SidebarMenu.MULTI_TRAIT_QUERY);
             await sidebar.verifyPageText('MULTI-TRAIT QUERY');
-        });   
+        });
 
         await test.step('Navigate to High-Density page', async() => {
             // TODO:
             //Check High-Density Page
             // await sidebar.expandSidebarTree('Genotyping');
             // await sidebar.clickSideBarMenu('High Density');
-        });   
+        });
 
 
         await test.step('Navigate to Manage Ontologies page', async() => {
             await sidebar.expandSidebarTree(SidebarSection.CROP_ADMINISTRATION);
             await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_ONTOLOGIES);
             await sidebar.verifyFrameHeading('Ontology Browser');
-        });   
+        });
 
         await test.step('Navigate to Manage Crop Settings page', async() => {
             await sidebar.expandSidebarTree(SidebarSection.CROP_ADMINISTRATION);
             await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_CROP_SETTINGS);
             await sidebar.verifyPageText('Manage Crop settings');
 
-        });   
+        });
 
         await test.step('Navigate to BrAPI Sync (beta) page', async() => {
             await sidebar.expandSidebarTree(SidebarSection.CROP_ADMINISTRATION);
@@ -249,8 +249,8 @@ test.describe('Sanity Testing',()=>{
             await sidebar.expandSidebarTree(SidebarSection.PROGRAM_ADMINISTRATION);
             await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_PROGRAM_SETTINGS);
             await sidebar.verifyPageHeading('Manage Program Settings');
-        });   
-      
+        });
+
     });
 
     test('IBP-T294 Check if BMS version is correct', { tag: ['@sanity'] } ,async ({ page, login }) => {
@@ -258,12 +258,12 @@ test.describe('Sanity Testing',()=>{
         await login.goto();
 
         await test.step('Verify the BMS Version on login page', async() => {
-            const element = await page.locator('[data-test="bms-version"]');   
+            const element = await page.locator('[data-test="bms-version"]');
             await expect(element).toHaveText('30.2');
-         });
-    
+        });
+
     });
-    
+
     test('IBP-T292 Check if Pedigree Tree and Graph are showing', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, sidebar, germplasmManager }) => {
 
         await login.authenticate();
@@ -280,16 +280,16 @@ test.describe('Sanity Testing',()=>{
             await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_GERMPLASM);
             await sidebar.verifyPageHeading('Germplasm Manager');
         });
-            
+
 
         await page.pause();
 
-         await test.step('Filter by GID and click the GID link', async() => {
+        await test.step('Filter by GID and click the GID link', async() => {
             await germplasmManager.filterByGID('1');
             await germplasmManager.clickGIDLink('1');
         });
-            
-       
+
+
         await expect(page.getByText('Germplasm Details:'), 'Verify that the Germplasm Details is displayed').toBeVisible();
         // Navigate to Pedigree Tab
         await page.getByRole('link', { name: 'Pedigree' }).click();
@@ -302,12 +302,12 @@ test.describe('Sanity Testing',()=>{
     });
 
 
-   test('IBP-T291 Generate Experimental Designs', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, addProgram, sidebar, germplasmManager, studyManager, studyEditor, createNewStudy}) => {
+    test('IBP-T291 Generate Experimental Designs', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, addProgram, sidebar, germplasmManager, studyManager, studyEditor, createNewStudy }) => {
 
         await login.authenticate();
 
         let newProgram = '';
-        
+
         await test.step('Go to Dashboard page and click Add Program', async() => {
             await dashboard.goto();
             await dashboard.clickAddProgram();
@@ -345,7 +345,7 @@ test.describe('Sanity Testing',()=>{
             await saveGermplasmListModal.verifyModalIsVisible();
             listName = await saveGermplasmListModal.createNewList();
         });
-        
+
         await test.step('Navigate to Manage Studies page', async() => {
             await sidebar.expandSidebarTree(SidebarSection.STUDIES);
             await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_STUDIES);
@@ -353,13 +353,13 @@ test.describe('Sanity Testing',()=>{
         });
 
         await test.step('Go to create new study', async() => {
-           await studyManager.clickStartNewStudy();
+            await studyManager.clickStartNewStudy();
         });
 
         let studyName = '';
         await test.step('Create a new study', async() => {
-           await createNewStudy.verifyCreateStudyIsVisible();
-           studyName = await createNewStudy.createNewStudy();
+            await createNewStudy.verifyCreateStudyIsVisible();
+            studyName = await createNewStudy.createNewStudy();
         });
 
         await test.step('After creating a study, page should be redirected to Study Editor', async() => {
@@ -367,51 +367,51 @@ test.describe('Sanity Testing',()=>{
             await studyEditor.verifyBasicDetails(studyName);
         });
 
-       await test.step('Select Germplasm List for Study Germplasm Entries', async() => {
-           await studyEditor.navigateToTab('Germplasm & Checks');
-           await studyEditor.browseGermplasmList(listName);
-       });
+        await test.step('Select Germplasm List for Study Germplasm Entries', async() => {
+            await studyEditor.navigateToTab('Germplasm & Checks');
+            await studyEditor.browseGermplasmList(listName);
+        });
 
-       await test.step('Verify Experimental Design form views', async() => {
-           await studyEditor.navigateToTab('Experimental Design');
-           await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
-           await studyEditor.selectDesignType(DesignType.ResolvableIncompleteBlock);
-           await studyEditor.selectDesignType(DesignType.RowAndColumn);
-           await studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock);
-           await studyEditor.selectDesignType(DesignType.PrepDesign);
-           await studyEditor.selectDesignType(DesignType.EntryListOrder);
-       });
+        await test.step('Verify Experimental Design form views', async() => {
+            await studyEditor.navigateToTab('Experimental Design');
+            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+            await studyEditor.selectDesignType(DesignType.ResolvableIncompleteBlock);
+            await studyEditor.selectDesignType(DesignType.RowAndColumn);
+            await studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock);
+            await studyEditor.selectDesignType(DesignType.PrepDesign);
+            await studyEditor.selectDesignType(DesignType.EntryListOrder);
+        });
 
-       await test.step('Generate Randomized Complete Block Design', async() => {
-           await studyEditor.navigateToTab('Experimental Design');
-           await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
-           await studyEditor.fillStartingPlotNumber('1');
-           await studyEditor.fillNumberOfReplications('12');
-           await studyEditor.clickGenerateDesign();
-       });
+        await test.step('Generate Randomized Complete Block Design', async() => {
+            await studyEditor.navigateToTab('Experimental Design');
+            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+            await studyEditor.fillStartingPlotNumber('1');
+            await studyEditor.fillNumberOfReplications('12');
+            await studyEditor.clickGenerateDesign();
+        });
 
-       await test.step('Select all environments and generate design', async() => {
-           const generateDesignModal = new GenerateDesignModalPage(page);
-           await generateDesignModal.isVisible();
-           await generateDesignModal.selectAll();
-           await generateDesignModal.generate();
-       });
+        await test.step('Select all environments and generate design', async() => {
+            const generateDesignModal = new GenerateDesignModalPage(page);
+            await generateDesignModal.isVisible();
+            await generateDesignModal.selectAll();
+            await generateDesignModal.generate();
+        });
 
-       await test.step('Confirm Additional Design Details', async() => {
-           const generateDesignConfirmModalPage = new GenerateDesignConfirmModalPage(page);
-           await generateDesignConfirmModalPage.isVisible();
-           await generateDesignConfirmModalPage.clickYes();
-       });
+        await test.step('Confirm Additional Design Details', async() => {
+            const generateDesignConfirmModalPage = new GenerateDesignConfirmModalPage(page);
+            await generateDesignConfirmModalPage.isVisible();
+            await generateDesignConfirmModalPage.clickYes();
+        });
 
     });
 
 
-     test('IBP-T2357 Create new program', { tag: ['@sanity'] } ,async ({ browser, login, dashboard, addProgram, sidebar }) => {
+    test('IBP-T2357 Create new program', { tag: ['@sanity'] } ,async ({ browser, login, dashboard, addProgram, sidebar }) => {
 
         await login.authenticate();
 
         let newProgram = '';
-        
+
         await test.step('Go to Dashboard page and click Add Program', async() => {
             await dashboard.goto();
             await dashboard.clickAddProgram();

@@ -1,4 +1,4 @@
-import { expect, test} from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { BMSAPIPage } from '../../pages/bmsapi-page';
 import { LoginPage } from '../../pages/login-page';
 import { DashboardPage } from '../../pages/dashboard-page';
@@ -12,7 +12,7 @@ test.describe('Sanity Testing Clean Setup',()=>{
 
         const testUserContext = await browser.newContext();
         const page = await testUserContext.newPage();
-        
+
         const login = new LoginPage(page);
         const dashboard = new DashboardPage(page);
         const bmsapi = new BMSAPIPage(page);
@@ -20,14 +20,14 @@ test.describe('Sanity Testing Clean Setup',()=>{
 
         await page.waitForLoadState('networkidle');
         //Perform authentication steps
-        await login.fillUsername("admin");
-        await login.fillPassword("@dm1N");
+        await login.fillUsername('admin');
+        await login.fillPassword('@dm1N');
         await login.clickLogin();
-        
+
         await expect(page.getByText('Upgrade Notification'), 'Verify that Upgrade Notification is visibsle after logging in').toBeVisible();
         await page.getByRole('button', { name: 'Ok' }).click();
         await expect(page.getByText('Upgrade Notification'), 'Verify that Upgrade Notification is not visible after clicking OK').toBeHidden();
-        
+
         //Verify dashboard page elements
         await dashboard.verifyDashboardURL();
         await dashboard.verifyFieldmapManagerBtn();
@@ -41,7 +41,7 @@ test.describe('Sanity Testing Clean Setup',()=>{
     });
 
     test('IBP-T2354 Check all side menu links', { tag: ['@sanity-clean-setup'] } ,async ({ browser }) => {
-       // testUserContext with test user logged in
+        // testUserContext with test user logged in
         const testUserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
         const testUserPage = await testUserContext.newPage();
 
@@ -52,7 +52,7 @@ test.describe('Sanity Testing Clean Setup',()=>{
         await dashboard.selectCrop('maize');
         await dashboard.selectProgram('TestingProgram');
         await dashboard.launchProgram();
-       // await testUserPage.pause();
+        // await testUserPage.pause();
 
         //Check Germplasm Manager Page
         await sidebar.expandSidebarTree('Germplasm');
@@ -73,7 +73,7 @@ test.describe('Sanity Testing Clean Setup',()=>{
         await sidebar.expandSidebarTree('Studies');
         await sidebar.clickSideBarMenu('Manage Studies');
         await sidebar.verifyPageHeading('Manage Studies');
-        
+
         //Check Import Datasets Page
         await sidebar.expandSidebarTree('Studies');
         await sidebar.clickSideBarMenu('Import Datasets');
@@ -88,7 +88,7 @@ test.describe('Sanity Testing Clean Setup',()=>{
         await sidebar.expandSidebarTree('Studies');
         await sidebar.clickSideBarMenu('Multi-Site Analysis');
         await sidebar.verifyPageText('MULTI-SITE ANALYSIS');
-    
+
         // Check Manage Inventory Page
         await sidebar.expandSidebarTree('Inventory');
         await sidebar.clickSideBarMenu('Manage Inventory');
@@ -136,7 +136,7 @@ test.describe('Sanity Testing Clean Setup',()=>{
         await sidebar.verifyPageHeading('Manage Program Settings');
     });
 
-     test('IBP-T2352 Check BV Design License is not included', { tag: ['@sanity-clean-setup'] } , async ({ page }) => {
+    test('IBP-T2352 Check BV Design License is not included', { tag: ['@sanity-clean-setup'] } , async ({ page }) => {
         const login = new LoginPage(page);
         await login.goto();
         const bmsapi = new BMSAPIPage(page);
@@ -149,7 +149,7 @@ test.describe('Sanity Testing Clean Setup',()=>{
         const login = new LoginPage(page);
         await login.goto();
 
-        const element = await page.locator('[data-test="bms-version"]');   
+        const element = await page.locator('[data-test="bms-version"]');
         await expect(element).toHaveText('30.2');
     });
 
@@ -159,7 +159,7 @@ test.describe('Sanity Testing Clean Setup',()=>{
         const testUserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
         const testUserPage = await testUserContext.newPage();
 
-        const dashboard = new DashboardPage(testUserPage); 
+        const dashboard = new DashboardPage(testUserPage);
         const sidebar = new SideBarPage(testUserPage);
         const manageGermplasm = new GermplasmManagerPage(testUserPage);
 
@@ -174,13 +174,13 @@ test.describe('Sanity Testing Clean Setup',()=>{
         await sidebar.clickSideBarMenu('Manage Germplasm');
         await sidebar.verifyPageHeading('Germplasm Manager');
 
-         await testUserPage.pause();
+        await testUserPage.pause();
 
         //Click first GID link
         await manageGermplasm.filterByGID('1');
         await manageGermplasm.clickGIDLink('1');
 
-        
+
         await expect(testUserPage.getByText('Germplasm Details:'), 'Verify that the Germplasm Details is displayed').toBeVisible();
 
         // Navigate to Pedigree Tab
@@ -189,11 +189,11 @@ test.describe('Sanity Testing Clean Setup',()=>{
         // Click the View Pedigree Graph
         await testUserPage.getByRole('button', { name: 'View Pedigree Graph' }).click();
 
-    
+
         await expect(testUserPage.getByRole('heading', { name: 'Pedigree Graph' }), 'Verify that Pedigree Graph is displayed').toBeVisible();
         await expect(testUserPage.locator('polygon').first(), 'Verify that at least one polygon is visible').toBeVisible();
 
-    
+
         // // Keep browser open and handle manual close
         // await new Promise((resolve) => {
         //     process.on('SIGINT', async () => {
@@ -205,21 +205,21 @@ test.describe('Sanity Testing Clean Setup',()=>{
 
     test('IBP-T2357 Create new program', { tag: ['@sanity-clean-setup'] } , async ({ browser }) => {
 
-         // testUserContext with test user logged in
+        // testUserContext with test user logged in
         const context = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
         const page = await context.newPage();
         const dashboard = new DashboardPage(page);
         const addProgramPage = new AddProgramPage(page);
-       
+
         await test.step('Go to Dashboard page and click Add Program', async() => {
             await dashboard.goto();
             await dashboard.clickAddProgram();
         });
 
         await test.step('Create a new program', async() => {
-             await addProgramPage.createNewProgram();
+            await addProgramPage.createNewProgram();
         });
-       
+
 
     });
 
