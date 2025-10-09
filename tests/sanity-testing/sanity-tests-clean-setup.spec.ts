@@ -16,12 +16,12 @@ test.describe('Sanity Testing Clean Setup',()=>{
         const login = new LoginPage(page);
         const dashboard = new DashboardPage(page);
         const bmsapi = new BMSAPIPage(page);
-        await login.goToLoginPage();       
+        await login.goto();
 
         await page.waitForLoadState('networkidle');
         //Perform authentication steps
-        await login.enterUsername("admin");
-        await login.enterPassword("@dm1N");
+        await login.fillUsername("admin");
+        await login.fillPassword("@dm1N");
         await login.clickLogin();
         
         await expect(page.getByText('Upgrade Notification'), 'Verify that Upgrade Notification is visibsle after logging in').toBeVisible();
@@ -34,7 +34,7 @@ test.describe('Sanity Testing Clean Setup',()=>{
         await dashboard.verifyAddProgramBtn();
         // await dashboard.verifySiteAdminBtn();
 
-        await bmsapi.goToBMSAPI();
+        await bmsapi.goto();
         await bmsapi.verifyBMSAPIHeading();
 
         page.close();
@@ -47,7 +47,7 @@ test.describe('Sanity Testing Clean Setup',()=>{
 
         const dashboard = new DashboardPage(testUserPage);
         const sidebar = new SideBarPage(testUserPage);
-        await dashboard.goToDashboardPage();
+        await dashboard.goto();
 
         await dashboard.selectCrop('maize');
         await dashboard.selectProgram('TestingProgram');
@@ -138,16 +138,16 @@ test.describe('Sanity Testing Clean Setup',()=>{
 
      test('IBP-T2352 Check BV Design License is not included', { tag: ['@sanity-clean-setup'] } , async ({ page }) => {
         const login = new LoginPage(page);
-        await login.goToLoginPage();
+        await login.goto();
         const bmsapi = new BMSAPIPage(page);
-        await bmsapi.goToBMSAPI();
+        await bmsapi.goto();
         await bmsapi.verifyBMSAPIHeading();
         page.close();
     });
 
     test('IBP-T2355 Check if BMS version is correct', { tag: ['@sanity-clean-setup'] } ,async ({ page }) => {
         const login = new LoginPage(page);
-        await login.goToLoginPage();
+        await login.goto();
 
         const element = await page.locator('[data-test="bms-version"]');   
         await expect(element).toHaveText('30.2');
@@ -164,7 +164,7 @@ test.describe('Sanity Testing Clean Setup',()=>{
         const manageGermplasm = new GermplasmManagerPage(testUserPage);
 
         //Go to Dashboard and launch a program
-        await dashboard.goToDashboardPage();
+        await dashboard.goto();
         await dashboard.selectCrop('maize');
         await dashboard.selectProgram('TestingProgram');
         await dashboard.launchProgram();
@@ -212,7 +212,7 @@ test.describe('Sanity Testing Clean Setup',()=>{
         const addProgramPage = new AddProgramPage(page);
        
         await test.step('Go to Dashboard page and click Add Program', async() => {
-            await dashboard.goToDashboardPage();
+            await dashboard.goto();
             await dashboard.clickAddProgram();
         });
 

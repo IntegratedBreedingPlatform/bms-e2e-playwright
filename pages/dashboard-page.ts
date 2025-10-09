@@ -34,7 +34,7 @@ export class DashboardPage{
     private selectProgramFromList(program: string): Locator {
         return this.page.getByRole('option', { name: program }).first();
     }
-    async goToDashboardPage(){
+    async goto(){
         await this.page.goto('/ibpworkbench/main/app/#/programs/my-studies');
         await this.page.waitForLoadState('networkidle');
     }

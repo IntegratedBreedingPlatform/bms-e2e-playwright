@@ -9,7 +9,7 @@ export class BMSAPIPage{
         this.bmsapiHeading = page.getByRole('heading', { name: 'BMSAPI' });
     }
 
-    async goToBMSAPI(){
+    async goto(){
         await this.page.goto('/bmsapi');
     }
 

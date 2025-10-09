@@ -1,4 +1,4 @@
-import {expect, test} from '@playwright/test';
+import {expect, test as base} from '@playwright/test';
 import {BMSAPIPage} from '../../pages/bmsapi-page';
 import {LoginPage} from '../../pages/login-page';
 import {DashboardPage} from '../../pages/dashboard-page';
@@ -10,23 +10,95 @@ import {SaveGermplasmListModalPage} from "../../pages/save-germplasm-list-modal-
 import { ManageStudiesPage } from '../../pages/study-manager/manage-studies-page';
 import { CreateNewStudyPage } from '../../pages/study-manager/create-new-study-page';
 
-test.describe('Sanity Testing',()=>{
+// Declare the types of the common pages.
+type BMSPages = {
+    bmsapi: BMSAPIPage;
+    login: LoginPage;
+    dashboard: DashboardPage;
+    sidebar: SideBarPage;
+    germplasmManager: GermplasmManagerPage;
+    addProgram: AddProgramPage;
+    studyManager: ManageStudiesPage;
+    createNewStudy: CreateNewStudyPage;
+    saveGermplasmListModal: SaveGermplasmListModalPage;
+};
 
-    test('IBP-T290 Access BMS in UAT test instance', { tag: ['@sanity'] } , async ({ browser }) => {
-        
+export const test = base.extend<BMSPages>({
+    login: async ({ browser, page }, use) => {
+        const login = new LoginPage(page);
+        // Use the fixture value in the test.
+        await use(login);
+    },
+    bmsapi: async ({ browser }, use) => {
         const browserContext = await browser.newContext();
         const page = await browserContext.newPage();
-        
-        const login = new LoginPage(page);
-        const dashboard = new DashboardPage(page);
-        const bmsapi = new BMSAPIPage(page);
-        await login.goToLoginPage();       
+        // Set up the fixture.
+        const bmsapiPage = new BMSAPIPage(page);
+        // Use the fixture value in the test.
+        await use(bmsapiPage);
+    },
+    dashboard: async ({ browser, page }, use) => {
+        // const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
+        // const page = await browserContext.newPage();
+        // Set up the fixture.
+        const dashboardPage = new DashboardPage(page);
+        // Use the fixture value in the test.
+        await use(dashboardPage);
+    },
+    sidebar: async ({ browser, page }, use) => {
+        // const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
+        // const page = await browserContext.newPage();
+        // Set up the fixture.
+        const sideBarPage = new SideBarPage(page);
+        // Use the fixture value in the test.
+        await use(sideBarPage);
+    },
+    germplasmManager: async ({ browser, page }, use) => {
+        // const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
+        // const page = await browserContext.newPage();
+        // Set up the fixture.
+        const germplasmManagerPage = new GermplasmManagerPage(page);
+        // Use the fixture value in the test.
+        await use(germplasmManagerPage);
+    },
+    addProgram: async ({ browser, page }, use) => {
+        // const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
+        // const page = await browserContext.newPage();
+        // Set up the fixture.
+        const addProgramPage = new AddProgramPage(page);
+        // Use the fixture value in the test.
+        await use(addProgramPage);
+    },
+    studyManager: async ({ browser, page }, use) => {
+        // const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
+        // const page = await browserContext.newPage();
+        // Set up the fixture.
+        const manageStudiesPage = new ManageStudiesPage(page);
+        // Use the fixture value in the test.
+        await use(manageStudiesPage);
+    },
+    createNewStudy: async ({ browser, page }, use) => {
+        // const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
+        // const page = await browserContext.newPage();
+        // Set up the fixture.
+        const createNewStudyPage = new CreateNewStudyPage(page);
+        // Use the fixture value in the test.
+        await use(createNewStudyPage);
+    },
+});
+
+
+test.describe('Sanity Testing',()=>{
+
+    test('IBP-T290 Access BMS in UAT test instance', { tag: ['@sanity'] } , async ({ page, login, bmsapi, dashboard }) => {
+
+        await login.goto();
 
         await page.waitForLoadState('networkidle');
 
         await test.step('Login using admin credentials', async() => {
-            await login.enterUsername("admin");
-            await login.enterPassword("@dm1N");
+            await login.fillUsername("admin");
+            await login.fillPassword("@dm1N");
             await login.clickLogin();
         });
        
@@ -37,106 +109,101 @@ test.describe('Sanity Testing',()=>{
         });
        
         await test.step('Verify BMSAPI is loading correctly', async() => {
-            await bmsapi.goToBMSAPI();
+            await bmsapi.goto();
             await bmsapi.verifyBMSAPIHeading();
         });
 
     });
 
-    test('IBP-T293 Check all side menu links', { tag: ['@sanity'] } ,async ({ browser }) => {
-       // browserContext with test user logged in
-        const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
-        const page = await browserContext.newPage();
+    test('IBP-T293 Check all side menu links', { tag: ['@sanity'] } ,async ({ browser, login, dashboard, addProgram, sidebar }) => {
 
-        const dashboard = new DashboardPage(page);
-        const addProgramPage = new AddProgramPage(page);
-        const sidebarPage = new SideBarPage(page);
+        await login.authenticate();
 
         let newProgram = '';
 
         await test.step('Go to Dashboard page and click Add Program', async() => {
-            await dashboard.goToDashboardPage();
+            await dashboard.goto();
             await dashboard.clickAddProgram();
         });
 
         await test.step('Create a new program', async() => {
-            newProgram = await addProgramPage.createNewProgram();
+            newProgram = await addProgram.createNewProgram();
         });
 
-        await sidebarPage.verifyPageHeading('Manage Program Settings');
+        await sidebar.verifyPageHeading('Manage Program Settings');
 
         await test.step('Launch an existing program', async() => {
-            await dashboard.goToDashboardPage();
+            await dashboard.goto();
             await dashboard.selectCrop(TEST_CROP);
             await dashboard.selectProgram(newProgram);
             await dashboard.launchProgram();
         });
 
         await test.step('Navigate to Germplasm Manager page', async() => {
-            await sidebarPage.expandSidebarTree(SidebarSection.GERMPLASM);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.MANAGE_GERMPLASM);
-            await sidebarPage.verifyPageHeading('Germplasm Manager');
+            await sidebar.expandSidebarTree(SidebarSection.GERMPLASM);
+            await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_GERMPLASM);
+            await sidebar.verifyPageHeading('Germplasm Manager');
         });
        
         await test.step('Navigate to Germplasm List/List Manager page', async() => {
-            await sidebarPage.expandSidebarTree(SidebarSection.LISTS);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.GERMPLASM_LISTS);
-            await sidebarPage.verifyPageHeading('Germplasm Lists');
+            await sidebar.expandSidebarTree(SidebarSection.LISTS);
+            await sidebar.clickSideBarMenu(SidebarMenu.GERMPLASM_LISTS);
+            await sidebar.verifyPageHeading('Germplasm Lists');
         });
 
         await test.step('Navigate to Manage Samples page', async() => {
-            await sidebarPage.expandSidebarTree(SidebarSection.LISTS);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.SAMPLES_LISTS);
-            await sidebarPage.verifyPageHeading('Manage Samples');
+            await sidebar.expandSidebarTree(SidebarSection.LISTS);
+            await sidebar.clickSideBarMenu(SidebarMenu.SAMPLES_LISTS);
+            await sidebar.verifyPageHeading('Manage Samples');
         });
 
         await test.step('Navigate to Manage Studies page', async() => {
-           await sidebarPage.expandSidebarTree(SidebarSection.STUDIES);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.MANAGE_STUDIES);
-            await sidebarPage.verifyPageHeading('Manage Studies');
+           await sidebar.expandSidebarTree(SidebarSection.STUDIES);
+            await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_STUDIES);
+            await sidebar.verifyPageHeading('Manage Studies');
         });
 
         await test.step('Navigate to Import Datasets page', async() => {
-            await sidebarPage.expandSidebarTree(SidebarSection.STUDIES);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.IMPORT_DATASETS);
-            await sidebarPage.verifyFrameText('Dataset Importer');
+            await sidebar.expandSidebarTree(SidebarSection.STUDIES);
+            await sidebar.clickSideBarMenu(SidebarMenu.IMPORT_DATASETS);
+            await sidebar.verifyFrameText('Dataset Importer');
         });
        
         await test.step('Navigate to Single Site Analysis page', async() => {
-            await sidebarPage.expandSidebarTree(SidebarSection.STUDIES);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.SINGLE_SITE_ANALYSIS);
-            await sidebarPage.verifyPageText('SINGLE-SITE ANALYSIS');
+            await sidebar.expandSidebarTree(SidebarSection.STUDIES);
+            await sidebar.clickSideBarMenu(SidebarMenu.SINGLE_SITE_ANALYSIS);
+            await sidebar.verifyPageText('SINGLE-SITE ANALYSIS');
         });
        
         await test.step('Navigate to Multi Site Analysis page', async() => {
-            await sidebarPage.expandSidebarTree(SidebarSection.STUDIES);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.MULTI_SITE_ANALYSIS);
-            await sidebarPage.verifyPageText('MULTI-SITE ANALYSIS');
+            await sidebar.expandSidebarTree(SidebarSection.STUDIES);
+            await sidebar.clickSideBarMenu(SidebarMenu.MULTI_SITE_ANALYSIS);
+            await sidebar.verifyPageText('MULTI-SITE ANALYSIS');
         });
 
         await test.step('Navigate to Manage Inventory page', async() => {
-            await sidebarPage.expandSidebarTree(SidebarSection.INVENTORY);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.MANAGE_INVENTORY);
-            await sidebarPage.verifyPageHeading('Manage Inventory');
+            await sidebar.expandSidebarTree(SidebarSection.INVENTORY);
+            await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_INVENTORY);
+            await sidebar.verifyPageHeading('Manage Inventory');
         });
     
         await test.step('Navigate to Graphical Queries page', async() => {
-            await sidebarPage.expandSidebarTree(SidebarSection.QUERIES);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.GRAPHICAL_QUERIES);
-            await sidebarPage.verifyFrameHeading('BrAPI Graphical Queries');
+            await sidebar.expandSidebarTree(SidebarSection.QUERIES);
+            await sidebar.clickSideBarMenu(SidebarMenu.GRAPHICAL_QUERIES);
+            await sidebar.verifyFrameHeading('BrAPI Graphical Queries');
 
         });
 
         await test.step('Navigate to Head to Head Query page', async() => {
-            await sidebarPage.expandSidebarTree(SidebarSection.QUERIES);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.HEAD_TO_HEAD_QUERY);
-            await sidebarPage.verifyPageText('MAIN HEAD TO HEAD QUERY');
+            await sidebar.expandSidebarTree(SidebarSection.QUERIES);
+            await sidebar.clickSideBarMenu(SidebarMenu.HEAD_TO_HEAD_QUERY);
+            await sidebar.verifyPageText('MAIN HEAD TO HEAD QUERY');
         });
 
         await test.step('Navigate to Multi-Trait Query page', async() => {
-            await sidebarPage.expandSidebarTree(SidebarSection.QUERIES);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.MULTI_TRAIT_QUERY);
-            await sidebarPage.verifyPageText('MULTI-TRAIT QUERY');
+            await sidebar.expandSidebarTree(SidebarSection.QUERIES);
+            await sidebar.clickSideBarMenu(SidebarMenu.MULTI_TRAIT_QUERY);
+            await sidebar.verifyPageText('MULTI-TRAIT QUERY');
         });   
 
         await test.step('Navigate to High-Density page', async() => {
@@ -148,35 +215,35 @@ test.describe('Sanity Testing',()=>{
 
 
         await test.step('Navigate to Manage Ontologies page', async() => {
-            await sidebarPage.expandSidebarTree(SidebarSection.CROP_ADMINISTRATION);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.MANAGE_ONTOLOGIES);
-            await sidebarPage.verifyFrameHeading('Ontology Browser');
+            await sidebar.expandSidebarTree(SidebarSection.CROP_ADMINISTRATION);
+            await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_ONTOLOGIES);
+            await sidebar.verifyFrameHeading('Ontology Browser');
         });   
 
         await test.step('Navigate to Manage Crop Settings page', async() => {
-            await sidebarPage.expandSidebarTree(SidebarSection.CROP_ADMINISTRATION);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.MANAGE_CROP_SETTINGS);
-            await sidebarPage.verifyPageText('Manage Crop settings');
+            await sidebar.expandSidebarTree(SidebarSection.CROP_ADMINISTRATION);
+            await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_CROP_SETTINGS);
+            await sidebar.verifyPageText('Manage Crop settings');
 
         });   
 
         await test.step('Navigate to BrAPI Sync (beta) page', async() => {
-            await sidebarPage.expandSidebarTree(SidebarSection.CROP_ADMINISTRATION);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.BRAPI_SYNC);
-            await sidebarPage.verifyFrameHeading('BrAPI Synchronization Tool');
+            await sidebar.expandSidebarTree(SidebarSection.CROP_ADMINISTRATION);
+            await sidebar.clickSideBarMenu(SidebarMenu.BRAPI_SYNC);
+            await sidebar.verifyFrameHeading('BrAPI Synchronization Tool');
         });
 
         await test.step('Navigate to Manage Program Settings page', async() => {
-            await sidebarPage.expandSidebarTree(SidebarSection.PROGRAM_ADMINISTRATION);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.MANAGE_PROGRAM_SETTINGS);
-            await sidebarPage.verifyPageHeading('Manage Program Settings');
+            await sidebar.expandSidebarTree(SidebarSection.PROGRAM_ADMINISTRATION);
+            await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_PROGRAM_SETTINGS);
+            await sidebar.verifyPageHeading('Manage Program Settings');
         });   
       
     });
 
-    test('IBP-T294 Check if BMS version is correct', { tag: ['@sanity'] } ,async ({ page }) => {
-        const login = new LoginPage(page);
-        await login.goToLoginPage();
+    test('IBP-T294 Check if BMS version is correct', { tag: ['@sanity'] } ,async ({ page, login }) => {
+
+        await login.goto();
 
         await test.step('Verify the BMS Version on login page', async() => {
             const element = await page.locator('[data-test="bms-version"]');   
@@ -186,18 +253,12 @@ test.describe('Sanity Testing',()=>{
     });
 
 
-    test('IBP-T292 Check if Pedigree Tree and Graph are showing', { tag: ['@sanity'] } ,async ({ browser }) => {
-        // browserContext with test user logged in
-        const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
-        const page = await browserContext.newPage();
+    test('IBP-T292 Check if Pedigree Tree and Graph are showing', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, sidebar, germplasmManager }) => {
 
-        const dashboard = new DashboardPage(page);
-        const sidebar = new SideBarPage(page);
-        const manageGermplasm = new GermplasmManagerPage(page);
-
+        await login.authenticate();
 
         await test.step('Go to Dashboard and launch a program', async() => {
-            await dashboard.goToDashboardPage();
+            await dashboard.goto();
             await dashboard.selectCrop('maize');
             await dashboard.selectProgram('TestingProgram');
             await dashboard.launchProgram();
@@ -213,8 +274,8 @@ test.describe('Sanity Testing',()=>{
         await page.pause();
 
          await test.step('Filter by GID and click the GID link', async() => {
-            await manageGermplasm.filterByGID('1');
-            await manageGermplasm.clickGIDLink('1');
+            await germplasmManager.filterByGID('1');
+            await germplasmManager.clickGIDLink('1');
         });
             
        
@@ -229,48 +290,41 @@ test.describe('Sanity Testing',()=>{
 
     });
 
-    test('IBP-T291 Generate Experimental Designs', { tag: ['@sanity'] } ,async ({ browser }) => {
+    test('IBP-T291 Generate Experimental Designs', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, addProgram, sidebar, germplasmManager, studyManager, createNewStudy}) => {
 
-        const context = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
-        const page = await context.newPage();
-        const dashboard = new DashboardPage(page);
-        const addProgramPage = new AddProgramPage(page);
-        const sidebarPage = new SideBarPage(page);
-        const germplasmManagerPage = new GermplasmManagerPage(page);
-        const manageStudiesPage = new ManageStudiesPage(page);
-        const createNewStudyPage = new CreateNewStudyPage(page)
+        await login.authenticate();
 
         let newProgram = '';
         
         await test.step('Go to Dashboard page and click Add Program', async() => {
-            await dashboard.goToDashboardPage();
+            await dashboard.goto();
             await dashboard.clickAddProgram();
         });
 
         await test.step('Create a new program', async() => {
-            newProgram = await addProgramPage.createNewProgram();
+            newProgram = await addProgram.createNewProgram();
         });
 
-        await sidebarPage.verifyPageHeading('Manage Program Settings');
+        await sidebar.verifyPageHeading('Manage Program Settings');
 
         await test.step('Launch an existing program', async() => {
-            await dashboard.goToDashboardPage();
+            await dashboard.goto();
             await dashboard.selectCrop(TEST_CROP);
             await dashboard.selectProgram(newProgram);
             await dashboard.launchProgram();
         });
 
         await test.step('Navigate to Germplasm Manager page', async() => {
-            await sidebarPage.expandSidebarTree(SidebarSection.GERMPLASM);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.MANAGE_GERMPLASM);
-            await sidebarPage.verifyPageHeading('Germplasm Manager');
+            await sidebar.expandSidebarTree(SidebarSection.GERMPLASM);
+            await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_GERMPLASM);
+            await sidebar.verifyPageHeading('Germplasm Manager');
         });
 
 
         await test.step('Select all germplasm in the page and Create a new list', async() => {
-            await germplasmManagerPage.selectAllCurrentPage();
-            await germplasmManagerPage.clickActionsButton();
-            await germplasmManagerPage.clickActionsMenuButton('Create new list');
+            await germplasmManager.selectAllCurrentPage();
+            await germplasmManager.clickActionsButton();
+            await germplasmManager.clickActionsMenuButton('Create new list');
         });
 
         const saveGermplasmListModal = new SaveGermplasmListModalPage(page);
@@ -281,48 +335,43 @@ test.describe('Sanity Testing',()=>{
         });
         
         await test.step('Navigate to Manage Studies page', async() => {
-            await sidebarPage.expandSidebarTree(SidebarSection.STUDIES);
-            await sidebarPage.clickSideBarMenu(SidebarMenu.MANAGE_STUDIES);
-            await sidebarPage.verifyPageHeading('Manage Studies');
+            await sidebar.expandSidebarTree(SidebarSection.STUDIES);
+            await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_STUDIES);
+            await sidebar.verifyPageHeading('Manage Studies');
         });
 
         await test.step('Go to create new study', async() => {
-           await manageStudiesPage.clickStartNewStudy();
+           await studyManager.clickStartNewStudy();
         });
 
         let studyName;
         await test.step('Create a new study', async() => {
-           await createNewStudyPage.verifyCreateStudyIsVisible();
-           studyName = await createNewStudyPage.createNewStudy();
+           await createNewStudy.verifyCreateStudyIsVisible();
+           studyName = await createNewStudy.createNewStudy();
         });
-    
 
     });
 
 
-     test('IBP-T2357 Create new program', { tag: ['@sanity'] } ,async ({ browser }) => {
-        
-        const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
-        const page = await browserContext.newPage();
-        const dashboard = new DashboardPage(page);
-        const addProgramPage = new AddProgramPage(page);
-        const sidebarPage = new SideBarPage(page);
+     test('IBP-T2357 Create new program', { tag: ['@sanity'] } ,async ({ browser, login, dashboard, addProgram, sidebar }) => {
+
+        await login.authenticate();
 
         let newProgram = '';
         
         await test.step('Go to Dashboard page and click Add Program', async() => {
-            await dashboard.goToDashboardPage();
+            await dashboard.goto();
             await dashboard.clickAddProgram();
         });
 
         await test.step('Create a new program', async() => {
-            newProgram = await addProgramPage.createNewProgram();
+            newProgram = await addProgram.createNewProgram();
         });
 
-        await sidebarPage.verifyPageHeading('Manage Program Settings');
+        await sidebar.verifyPageHeading('Manage Program Settings');
 
         await test.step('Go to Dashboard page and verify that the. new program is selectable', async() => {
-            await dashboard.goToDashboardPage();
+            await dashboard.goto();
             await dashboard.selectProgram(newProgram);
         });
 
