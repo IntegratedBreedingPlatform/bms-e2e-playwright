@@ -5,10 +5,11 @@ import {DashboardPage} from '../../pages/dashboard-page';
 import {SideBarPage} from '../../pages/sidebar-page';
 import {GermplasmManagerPage} from '../../pages/germplasm-manager-page';
 import {AddProgramPage} from '../../pages/add-program-page';
-import {SidebarMenu, SidebarSection, TEST_CROP} from "../../pages/app.constants";
+import {DesignType, SidebarMenu, SidebarSection, TEST_CROP} from "../../pages/app.constants";
 import {SaveGermplasmListModalPage} from "../../pages/save-germplasm-list-modal-page";
-import { ManageStudiesPage } from '../../pages/study-manager/manage-studies-page';
-import { CreateNewStudyPage } from '../../pages/study-manager/create-new-study-page';
+import {ManageStudiesPage} from '../../pages/study-manager/manage-studies-page';
+import {CreateNewStudyPage} from '../../pages/study-manager/create-new-study-page';
+import {StudyEditorPage} from "../../pages/study-manager/study-editor-page";
 
 // Declare the types of the common pages.
 type BMSPages = {
@@ -19,6 +20,7 @@ type BMSPages = {
     germplasmManager: GermplasmManagerPage;
     addProgram: AddProgramPage;
     studyManager: ManageStudiesPage;
+    studyEditor: StudyEditorPage;
     createNewStudy: CreateNewStudyPage;
     saveGermplasmListModal: SaveGermplasmListModalPage;
 };
@@ -76,6 +78,14 @@ export const test = base.extend<BMSPages>({
         const manageStudiesPage = new ManageStudiesPage(page);
         // Use the fixture value in the test.
         await use(manageStudiesPage);
+    },
+    studyEditor: async ({ browser, page }, use) => {
+        // const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
+        // const page = await browserContext.newPage();
+        // Set up the fixture.
+        const studyEditorPage = new StudyEditorPage(page);
+        // Use the fixture value in the test.
+        await use(studyEditorPage);
     },
     createNewStudy: async ({ browser, page }, use) => {
         // const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
@@ -290,7 +300,8 @@ test.describe('Sanity Testing',()=>{
 
     });
 
-    test('IBP-T291 Generate Experimental Designs', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, addProgram, sidebar, germplasmManager, studyManager, createNewStudy}) => {
+
+   test('IBP-T291 Generate Experimental Designs', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, addProgram, sidebar, germplasmManager, studyManager, studyEditor, createNewStudy}) => {
 
         await login.authenticate();
 
@@ -344,11 +355,39 @@ test.describe('Sanity Testing',()=>{
            await studyManager.clickStartNewStudy();
         });
 
-        let studyName;
+        let studyName = '';
         await test.step('Create a new study', async() => {
            await createNewStudy.verifyCreateStudyIsVisible();
            studyName = await createNewStudy.createNewStudy();
         });
+
+        await test.step('After creating a study, page should be redirected to Study Editor', async() => {
+            await studyEditor.verifyStudyEditorIsVisible(studyName);
+            await studyEditor.verifyBasicDetails(studyName);
+        });
+
+       await test.step('Select Germplasm List for Study Germplasm Entries', async() => {
+           await studyEditor.navigateToTab('Germplasm & Checks');
+           await studyEditor.browseGermplasmList(listName);
+       });
+
+       await test.step('Verify Experimental Design form views', async() => {
+           await studyEditor.navigateToTab('Experimental Design');
+           await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+           await studyEditor.selectDesignType(DesignType.ResolvableIncompleteBlock);
+           await studyEditor.selectDesignType(DesignType.RowAndColumn);
+           await studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock);
+           await studyEditor.selectDesignType(DesignType.PrepDesign);
+           await studyEditor.selectDesignType(DesignType.EntryListOrder);
+       });
+
+       await test.step('Generate Randomized Complete Block Design', async() => {
+           await studyEditor.navigateToTab('Experimental Design');
+           await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+           await studyEditor.fillStartingPlotNumber('1');
+           await studyEditor.fillNumberOfReplications('12');
+           await studyEditor.clickGenerateDesign();
+       });
 
     });
 

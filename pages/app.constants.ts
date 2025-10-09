@@ -51,3 +51,12 @@ export enum SidebarSection {
     CROP_ADMINISTRATION = 'Crop Administration',
     PROGRAM_ADMINISTRATION = 'Program Administration'
 }
+
+export enum DesignType {
+    RandomizedCompleteBlock = 'Randomized Complete Block',
+    ResolvableIncompleteBlock = 'Resolvable Incomplete Block',
+    RowAndColumn = 'Row-and-Column',
+    AugmentedRandomizedBlock = 'Augmented Randomized Block',
+    EntryListOrder = 'Entry list order',
+    PrepDesign = 'P-rep Design'
+}
