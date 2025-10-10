@@ -42,62 +42,115 @@ export const test = base.extend<BMSPages>({
         await use(bmsapiPage);
     },
     dashboard: async ({ browser, page }, use) => {
-        // const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
-        // const page = await browserContext.newPage();
-        // Set up the fixture.
         const dashboardPage = new DashboardPage(page);
         // Use the fixture value in the test.
         await use(dashboardPage);
     },
     sidebar: async ({ browser, page }, use) => {
-        // const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
-        // const page = await browserContext.newPage();
-        // Set up the fixture.
         const sideBarPage = new SideBarPage(page);
         // Use the fixture value in the test.
         await use(sideBarPage);
     },
     germplasmManager: async ({ browser, page }, use) => {
-        // const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
-        // const page = await browserContext.newPage();
-        // Set up the fixture.
         const germplasmManagerPage = new GermplasmManagerPage(page);
         // Use the fixture value in the test.
         await use(germplasmManagerPage);
     },
     addProgram: async ({ browser, page }, use) => {
-        // const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
-        // const page = await browserContext.newPage();
-        // Set up the fixture.
         const addProgramPage = new AddProgramPage(page);
         // Use the fixture value in the test.
         await use(addProgramPage);
     },
     studyManager: async ({ browser, page }, use) => {
-        // const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
-        // const page = await browserContext.newPage();
-        // Set up the fixture.
         const manageStudiesPage = new ManageStudiesPage(page);
         // Use the fixture value in the test.
         await use(manageStudiesPage);
     },
     studyEditor: async ({ browser, page }, use) => {
-        // const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
-        // const page = await browserContext.newPage();
-        // Set up the fixture.
         const studyEditorPage = new StudyEditorPage(page);
         // Use the fixture value in the test.
         await use(studyEditorPage);
     },
     createNewStudy: async ({ browser, page }, use) => {
-        // const browserContext = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
-        // const page = await browserContext.newPage();
-        // Set up the fixture.
         const createNewStudyPage = new CreateNewStudyPage(page);
         // Use the fixture value in the test.
         await use(createNewStudyPage);
     },
 });
+
+async function setupStudyWithGermplasmList({
+    dashboard,
+    addProgram,
+    sidebar,
+    germplasmManager,
+    studyManager,
+    studyEditor,
+    createNewStudy,
+    page
+}: any) {
+    let newProgram = '';
+    let listName = '';
+    let studyName = '';
+
+    await test.step('Go to Dashboard page and click Add Program', async() => {
+        await dashboard.goto();
+        await dashboard.clickAddProgram();
+    });
+
+    await test.step('Create a new program', async() => {
+        newProgram = await addProgram.createNewProgram();
+    });
+
+    await sidebar.verifyPageHeading('Manage Program Settings');
+
+    await test.step('Launch an existing program', async() => {
+        await dashboard.goto();
+        await dashboard.selectCrop(TEST_CROP);
+        await dashboard.selectProgram(newProgram);
+        await dashboard.launchProgram();
+    });
+
+    await test.step('Navigate to Germplasm Manager page', async() => {
+        await sidebar.expandSidebarTree(SidebarSection.GERMPLASM);
+        await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_GERMPLASM);
+        await sidebar.verifyPageHeading('Germplasm Manager');
+    });
+
+    await test.step('Select all germplasm in the page and Create a new list', async() => {
+        await germplasmManager.selectAllCurrentPage();
+        await germplasmManager.clickActionsButton();
+        await germplasmManager.clickActionsMenuButton('Create new list');
+    });
+
+    const saveGermplasmListModal = new SaveGermplasmListModalPage(page);
+
+    await test.step('Create a new list to be used for creating a new study', async() => {
+        await saveGermplasmListModal.verifyModalIsVisible();
+        listName = await saveGermplasmListModal.createNewList();
+    });
+
+    await test.step('Navigate to Manage Studies page', async() => {
+        await sidebar.expandSidebarTree(SidebarSection.STUDIES);
+        await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_STUDIES);
+        await sidebar.verifyPageHeading('Manage Studies');
+    });
+
+    await test.step('Go to create new study page', async() => {
+        await studyManager.clickStartNewStudy();
+    });
+
+    await test.step('Create a new study and fill default study details', async() => {
+        await createNewStudy.verifyCreateStudyIsVisible();
+        studyName = await createNewStudy.createNewStudy();
+    });
+
+    await test.step('After creating a study, page should be redirected to Study Editor', async() => {
+        await studyEditor.verifyStudyEditorIsVisible(studyName);
+        await studyEditor.verifyBasicDetails(studyName);
+    });
+
+    return { newProgram, listName, studyName };
+}
 
 
 test.describe('Sanity Testing',()=>{
@@ -282,7 +335,7 @@ test.describe('Sanity Testing',()=>{
         });
 
 
-        await page.pause();
+        await page.waitForLoadState('networkidle');
 
         await test.step('Filter by GID and click the GID link', async() => {
             await germplasmManager.filterByGID('1');
@@ -301,70 +354,20 @@ test.describe('Sanity Testing',()=>{
 
     });
 
-
-    test('IBP-T291 Generate Experimental Designs', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, addProgram, sidebar, germplasmManager, studyManager, studyEditor, createNewStudy }) => {
+    test('IBP-T291 Generate Experimental Design (Randomized Complete Block Design)', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, addProgram, sidebar, germplasmManager, studyManager, studyEditor, createNewStudy }) => {
 
         await login.authenticate();
 
-        let newProgram = '';
-
-        await test.step('Go to Dashboard page and click Add Program', async() => {
-            await dashboard.goto();
-            await dashboard.clickAddProgram();
-        });
-
-        await test.step('Create a new program', async() => {
-            newProgram = await addProgram.createNewProgram();
-        });
-
-        await sidebar.verifyPageHeading('Manage Program Settings');
-
-        await test.step('Launch an existing program', async() => {
-            await dashboard.goto();
-            await dashboard.selectCrop(TEST_CROP);
-            await dashboard.selectProgram(newProgram);
-            await dashboard.launchProgram();
-        });
-
-        await test.step('Navigate to Germplasm Manager page', async() => {
-            await sidebar.expandSidebarTree(SidebarSection.GERMPLASM);
-            await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_GERMPLASM);
-            await sidebar.verifyPageHeading('Germplasm Manager');
-        });
-
-
-        await test.step('Select all germplasm in the page and Create a new list', async() => {
-            await germplasmManager.selectAllCurrentPage();
-            await germplasmManager.clickActionsButton();
-            await germplasmManager.clickActionsMenuButton('Create new list');
-        });
-
-        const saveGermplasmListModal = new SaveGermplasmListModalPage(page);
-        let listName = '';
-        await test.step('Create a new list to be used for creating a new study', async() => {
-            await saveGermplasmListModal.verifyModalIsVisible();
-            listName = await saveGermplasmListModal.createNewList();
-        });
-
-        await test.step('Navigate to Manage Studies page', async() => {
-            await sidebar.expandSidebarTree(SidebarSection.STUDIES);
-            await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_STUDIES);
-            await sidebar.verifyPageHeading('Manage Studies');
-        });
-
-        await test.step('Go to create new study', async() => {
-            await studyManager.clickStartNewStudy();
-        });
-
-        let studyName = '';
-        await test.step('Create a new study', async() => {
-            await createNewStudy.verifyCreateStudyIsVisible();
-            studyName = await createNewStudy.createNewStudy();
-        });
-
-        await test.step('After creating a study, page should be redirected to Study Editor', async() => {
-            await studyEditor.verifyStudyEditorIsVisible(studyName);
-            await studyEditor.verifyBasicDetails(studyName);
+        // Use the helper for setup
+        const { listName, studyName } = await setupStudyWithGermplasmList({
+            dashboard,
+            addProgram,
+            sidebar,
+            germplasmManager,
+            studyManager,
+            studyEditor,
+            createNewStudy,
+            page
         });
 
         await test.step('Select Germplasm List for Study Germplasm Entries', async() => {
@@ -405,6 +408,275 @@ test.describe('Sanity Testing',()=>{
 
     });
 
+    test('IBP-T291 Generate Experimental Design (Resolvable Incomplete Block Design)', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, addProgram, sidebar, germplasmManager, studyManager, studyEditor, createNewStudy }) => {
+
+        await login.authenticate();
+
+        // Use the helper for setup
+        const { listName, studyName } = await setupStudyWithGermplasmList({
+            dashboard,
+            addProgram,
+            sidebar,
+            germplasmManager,
+            studyManager,
+            studyEditor,
+            createNewStudy,
+            page
+        });
+
+        await test.step('Select Germplasm List for Study Germplasm Entries', async() => {
+            await studyEditor.navigateToTab('Germplasm & Checks');
+            await studyEditor.browseGermplasmList(listName);
+        });
+
+        await test.step('Verify Experimental Design form views', async() => {
+            await studyEditor.navigateToTab('Experimental Design');
+            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+            await studyEditor.selectDesignType(DesignType.ResolvableIncompleteBlock);
+            await studyEditor.selectDesignType(DesignType.RowAndColumn);
+            await studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock);
+            await studyEditor.selectDesignType(DesignType.PrepDesign);
+            await studyEditor.selectDesignType(DesignType.EntryListOrder);
+        });
+
+        await test.step('Generate Randomized Complete Block Design', async() => {
+            await studyEditor.navigateToTab('Experimental Design');
+            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+            await studyEditor.fillStartingPlotNumber('1');
+            await studyEditor.fillNumberOfReplications('12');
+            await studyEditor.clickGenerateDesign();
+        });
+
+        await test.step('Select all environments and generate design', async() => {
+            const generateDesignModal = new GenerateDesignModalPage(page);
+            await generateDesignModal.isVisible();
+            await generateDesignModal.selectAll();
+            await generateDesignModal.generate();
+        });
+
+        await test.step('Confirm Additional Design Details', async() => {
+            const generateDesignConfirmModalPage = new GenerateDesignConfirmModalPage(page);
+            await generateDesignConfirmModalPage.isVisible();
+            await generateDesignConfirmModalPage.clickYes();
+        });
+
+    });
+
+    test('IBP-T291 Generate Experimental Design (Row and Column Design)', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, addProgram, sidebar, germplasmManager, studyManager, studyEditor, createNewStudy }) => {
+
+        await login.authenticate();
+
+        // Use the helper for setup
+        const { listName, studyName } = await setupStudyWithGermplasmList({
+            dashboard,
+            addProgram,
+            sidebar,
+            germplasmManager,
+            studyManager,
+            studyEditor,
+            createNewStudy,
+            page
+        });
+
+        await test.step('Select Germplasm List for Study Germplasm Entries', async() => {
+            await studyEditor.navigateToTab('Germplasm & Checks');
+            await studyEditor.browseGermplasmList(listName);
+        });
+
+        await test.step('Verify Experimental Design form views', async() => {
+            await studyEditor.navigateToTab('Experimental Design');
+            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+            await studyEditor.selectDesignType(DesignType.ResolvableIncompleteBlock);
+            await studyEditor.selectDesignType(DesignType.RowAndColumn);
+            await studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock);
+            await studyEditor.selectDesignType(DesignType.PrepDesign);
+            await studyEditor.selectDesignType(DesignType.EntryListOrder);
+        });
+
+        await test.step('Generate Randomized Complete Block Design', async() => {
+            await studyEditor.navigateToTab('Experimental Design');
+            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+            await studyEditor.fillStartingPlotNumber('1');
+            await studyEditor.fillNumberOfReplications('12');
+            await studyEditor.clickGenerateDesign();
+        });
+
+        await test.step('Select all environments and generate design', async() => {
+            const generateDesignModal = new GenerateDesignModalPage(page);
+            await generateDesignModal.isVisible();
+            await generateDesignModal.selectAll();
+            await generateDesignModal.generate();
+        });
+
+        await test.step('Confirm Additional Design Details', async() => {
+            const generateDesignConfirmModalPage = new GenerateDesignConfirmModalPage(page);
+            await generateDesignConfirmModalPage.isVisible();
+            await generateDesignConfirmModalPage.clickYes();
+        });
+
+    });
+
+    test('IBP-T291 Generate Experimental Design (Augmented Randomized Block Design)', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, addProgram, sidebar, germplasmManager, studyManager, studyEditor, createNewStudy }) => {
+
+        await login.authenticate();
+
+        // Use the helper for setup
+        const { listName, studyName } = await setupStudyWithGermplasmList({
+            dashboard,
+            addProgram,
+            sidebar,
+            germplasmManager,
+            studyManager,
+            studyEditor,
+            createNewStudy,
+            page
+        });
+
+        await test.step('Select Germplasm List for Study Germplasm Entries', async() => {
+            await studyEditor.navigateToTab('Germplasm & Checks');
+            await studyEditor.browseGermplasmList(listName);
+        });
+
+        await test.step('Verify Experimental Design form views', async() => {
+            await studyEditor.navigateToTab('Experimental Design');
+            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+            await studyEditor.selectDesignType(DesignType.ResolvableIncompleteBlock);
+            await studyEditor.selectDesignType(DesignType.RowAndColumn);
+            await studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock);
+            await studyEditor.selectDesignType(DesignType.PrepDesign);
+            await studyEditor.selectDesignType(DesignType.EntryListOrder);
+        });
+
+        await test.step('Generate Randomized Complete Block Design', async() => {
+            await studyEditor.navigateToTab('Experimental Design');
+            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+            await studyEditor.fillStartingPlotNumber('1');
+            await studyEditor.fillNumberOfReplications('12');
+            await studyEditor.clickGenerateDesign();
+        });
+
+        await test.step('Select all environments and generate design', async() => {
+            const generateDesignModal = new GenerateDesignModalPage(page);
+            await generateDesignModal.isVisible();
+            await generateDesignModal.selectAll();
+            await generateDesignModal.generate();
+        });
+
+        await test.step('Confirm Additional Design Details', async() => {
+            const generateDesignConfirmModalPage = new GenerateDesignConfirmModalPage(page);
+            await generateDesignConfirmModalPage.isVisible();
+            await generateDesignConfirmModalPage.clickYes();
+        });
+
+    });
+
+    test('IBP-T291 Generate Experimental Design (P-Rep Design)', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, addProgram, sidebar, germplasmManager, studyManager, studyEditor, createNewStudy }) => {
+
+        await login.authenticate();
+
+        // Use the helper for setup
+        const { listName, studyName } = await setupStudyWithGermplasmList({
+            dashboard,
+            addProgram,
+            sidebar,
+            germplasmManager,
+            studyManager,
+            studyEditor,
+            createNewStudy,
+            page
+        });
+
+        await test.step('Select Germplasm List for Study Germplasm Entries', async() => {
+            await studyEditor.navigateToTab('Germplasm & Checks');
+            await studyEditor.browseGermplasmList(listName);
+        });
+
+        await test.step('Verify Experimental Design form views', async() => {
+            await studyEditor.navigateToTab('Experimental Design');
+            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+            await studyEditor.selectDesignType(DesignType.ResolvableIncompleteBlock);
+            await studyEditor.selectDesignType(DesignType.RowAndColumn);
+            await studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock);
+            await studyEditor.selectDesignType(DesignType.PrepDesign);
+            await studyEditor.selectDesignType(DesignType.EntryListOrder);
+        });
+
+        await test.step('Generate Randomized Complete Block Design', async() => {
+            await studyEditor.navigateToTab('Experimental Design');
+            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+            await studyEditor.fillStartingPlotNumber('1');
+            await studyEditor.fillNumberOfReplications('12');
+            await studyEditor.clickGenerateDesign();
+        });
+
+        await test.step('Select all environments and generate design', async() => {
+            const generateDesignModal = new GenerateDesignModalPage(page);
+            await generateDesignModal.isVisible();
+            await generateDesignModal.selectAll();
+            await generateDesignModal.generate();
+        });
+
+        await test.step('Confirm Additional Design Details', async() => {
+            const generateDesignConfirmModalPage = new GenerateDesignConfirmModalPage(page);
+            await generateDesignConfirmModalPage.isVisible();
+            await generateDesignConfirmModalPage.clickYes();
+        });
+
+    });
+
+    test('IBP-T291 Generate Experimental Design (Entry List Order)', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, addProgram, sidebar, germplasmManager, studyManager, studyEditor, createNewStudy }) => {
+
+        await login.authenticate();
+
+        // Use the helper for setup
+        const { listName, studyName } = await setupStudyWithGermplasmList({
+            dashboard,
+            addProgram,
+            sidebar,
+            germplasmManager,
+            studyManager,
+            studyEditor,
+            createNewStudy,
+            page
+        });
+
+        await test.step('Select Germplasm List for Study Germplasm Entries', async() => {
+            await studyEditor.navigateToTab('Germplasm & Checks');
+            await studyEditor.browseGermplasmList(listName);
+        });
+
+        await test.step('Verify Experimental Design form views', async() => {
+            await studyEditor.navigateToTab('Experimental Design');
+            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+            await studyEditor.selectDesignType(DesignType.ResolvableIncompleteBlock);
+            await studyEditor.selectDesignType(DesignType.RowAndColumn);
+            await studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock);
+            await studyEditor.selectDesignType(DesignType.PrepDesign);
+            await studyEditor.selectDesignType(DesignType.EntryListOrder);
+        });
+
+        await test.step('Generate Randomized Complete Block Design', async() => {
+            await studyEditor.navigateToTab('Experimental Design');
+            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+            await studyEditor.fillStartingPlotNumber('1');
+            await studyEditor.fillNumberOfReplications('12');
+            await studyEditor.clickGenerateDesign();
+        });
+
+        await test.step('Select all environments and generate design', async() => {
+            const generateDesignModal = new GenerateDesignModalPage(page);
+            await generateDesignModal.isVisible();
+            await generateDesignModal.selectAll();
+            await generateDesignModal.generate();
+        });
+
+        await test.step('Confirm Additional Design Details', async() => {
+            const generateDesignConfirmModalPage = new GenerateDesignConfirmModalPage(page);
+            await generateDesignConfirmModalPage.isVisible();
+            await generateDesignConfirmModalPage.clickYes();
+        });
+
+    });
 
     test('IBP-T2357 Create new program', { tag: ['@sanity'] } ,async ({ browser, login, dashboard, addProgram, sidebar }) => {
 
@@ -431,3 +703,5 @@ test.describe('Sanity Testing',()=>{
     });
 
 });
+
+

@@ -26,17 +26,11 @@ export default defineConfig({
     baseURL: 'http://localhost:8080',
     screenshot: 'only-on-failure'
   },
-  projects: [
-    // Setup project
-    { name: 'setup', testMatch: /.*\.setup\.ts/ },
-    
+  projects: [  
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'],
-         // Use prepared auth state.
-        //storageState: 'playwright/.auth/user.json',
-      },
-      dependencies: ['setup'],
+      }
     }
 
     // {
