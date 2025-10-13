@@ -12,6 +12,7 @@ import { CreateNewStudyPage } from '../../pages/study-manager/create-new-study-p
 import { StudyEditorPage } from '../../pages/study-manager/study-editor-page';
 import { GenerateDesignModalPage } from '../../pages/study-manager/modals/generate-design-modal-page';
 import { GenerateDesignConfirmModalPage } from '../../pages/study-manager/modals/generate-design-confim-modal-page';
+import { ManageProgramSettingsPage } from '../../pages/manage-program-settings-page';
 
 // Declare the types of the common pages.
 type BMSPages = {
@@ -56,10 +57,38 @@ export const test = base.extend<BMSPages>({
         // Use the fixture value in the test.
         await use(germplasmManagerPage);
     },
-    addProgram: async ({ browser, page }, use) => {
+    addProgram: async ({ browser, page, baseURL }, use) => {
         const addProgramPage = new AddProgramPage(page);
         // Use the fixture value in the test.
         await use(addProgramPage);
+
+
+        // Always delete the newly created program after the test
+        const dashboard = new DashboardPage(page);
+        await test.step('Launch an existing program', async() => {
+            await dashboard.goto();
+            await dashboard.selectCrop(TEST_CROP);
+            await dashboard.selectProgram(addProgramPage.getNewProgramName());
+            await dashboard.launchProgram();
+        });
+
+
+        const sidebar = new SideBarPage(page);
+        await test.step('Navigate to Manage Program Settings page', async() => {
+            await sidebar.expandSidebarTree(SidebarSection.PROGRAM_ADMINISTRATION);
+            await sidebar.clickSideBarMenu(SidebarMenu.MANAGE_PROGRAM_SETTINGS);
+            await sidebar.verifyPageHeading('Manage Program Settings');
+        });
+
+        const manageProgramSettingsPage = new ManageProgramSettingsPage(page);
+        await test.step('Delete program', async() => {
+            await manageProgramSettingsPage.verifyManageProgramSettingsPageIsVisible();
+            await manageProgramSettingsPage.navigateToTab('Basic Details');
+            await manageProgramSettingsPage.verifyBasicDetailsTabIsActive();
+            await manageProgramSettingsPage.clickDeleteButton();
+            await manageProgramSettingsPage.confirmDeleteProgram();
+        });
+
     },
     studyManager: async ({ browser, page }, use) => {
         const manageStudiesPage = new ManageStudiesPage(page);

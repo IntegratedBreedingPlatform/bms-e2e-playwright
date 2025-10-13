@@ -10,6 +10,7 @@ export class AddProgramPage{
     private readonly programBreedingLoc: Locator;
     private readonly programStorageLoc: Locator;
     private readonly saveProgramBtn: Locator;
+    private newProgramName: string;
 
     constructor(page: Page){
         this.page = page;
@@ -76,6 +77,7 @@ export class AddProgramPage{
 
         const formattedDate = getFormattedDateYYY_MM_DD();
         const program = `${TEST_PROGRAM_NAME} - [${generateRandomString(10)}]`;
+        this.newProgramName = program;
 
         await this.selectCrop(TEST_CROP);
         await this.enterProgramName(program);
@@ -88,6 +90,10 @@ export class AddProgramPage{
 
         return program;
     }
-   
-    
+
+    getNewProgramName(){
+        return this.newProgramName;
+    }
+
+
 }

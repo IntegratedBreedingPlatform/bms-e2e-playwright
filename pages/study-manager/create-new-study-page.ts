@@ -37,9 +37,9 @@ export class CreateNewStudyPage {
 
         await this.page.locator('[data-test="save-study-button"]').click();
 
-        await expect(this.page.getByText('Study is created successfully'), 'Verify that study is saved successfully').toBeVisible();
-
         await this.page.waitForLoadState('networkidle');
+
+        await expect(this.page.getByText('Study is created successfully'), 'Verify that study is saved successfully').toBeVisible();
 
         return studyName;
     }
