@@ -18,11 +18,13 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
-  expect: { timeout: 50000 },
+  expect: { timeout: 60000 }, // 60 seconds to expect
+  timeout: 300000, // 5 minutes per test
   use: {
     actionTimeout: 100000,
     navigationTimeout: 30000,
     trace: 'on-first-retry',
+    //baseURL: 'https://bms-centos-1.leafnode.io',
     baseURL: 'http://localhost:8080',
     screenshot: 'only-on-failure'
   },

@@ -407,15 +407,10 @@ test.describe('Sanity Testing',()=>{
         await test.step('Verify Experimental Design form views', async() => {
             await studyEditor.navigateToTab('Experimental Design');
             await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
-            await studyEditor.selectDesignType(DesignType.ResolvableIncompleteBlock);
-            await studyEditor.selectDesignType(DesignType.RowAndColumn);
-            await studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock);
-            await studyEditor.selectDesignType(DesignType.PrepDesign);
-            await studyEditor.selectDesignType(DesignType.EntryListOrder);
+            await studyEditor.verifyDefaultViewForRandomizedCompleteBlock();
         });
 
         await test.step('Generate Randomized Complete Block Design', async() => {
-            await studyEditor.navigateToTab('Experimental Design');
             await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
             await studyEditor.fillStartingPlotNumber('1');
             await studyEditor.fillNumberOfReplications('12');
@@ -460,19 +455,15 @@ test.describe('Sanity Testing',()=>{
 
         await test.step('Verify Experimental Design form views', async() => {
             await studyEditor.navigateToTab('Experimental Design');
-            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
             await studyEditor.selectDesignType(DesignType.ResolvableIncompleteBlock);
-            await studyEditor.selectDesignType(DesignType.RowAndColumn);
-            await studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock);
-            await studyEditor.selectDesignType(DesignType.PrepDesign);
-            await studyEditor.selectDesignType(DesignType.EntryListOrder);
+            await studyEditor.verifyDefaultViewForResolvableIncompleteBlock();
         });
 
-        await test.step('Generate Randomized Complete Block Design', async() => {
-            await studyEditor.navigateToTab('Experimental Design');
-            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+        await test.step('Generate Resolvable Incomplete Block Design', async() => {
+            await studyEditor.selectDesignType(DesignType.ResolvableIncompleteBlock);
             await studyEditor.fillStartingPlotNumber('1');
-            await studyEditor.fillNumberOfReplications('12');
+            await studyEditor.fillNumberOfReplications('2');
+            await studyEditor.fillNumberOfBlocks('5');
             await studyEditor.clickGenerateDesign();
         });
 
@@ -514,19 +505,16 @@ test.describe('Sanity Testing',()=>{
 
         await test.step('Verify Experimental Design form views', async() => {
             await studyEditor.navigateToTab('Experimental Design');
-            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
-            await studyEditor.selectDesignType(DesignType.ResolvableIncompleteBlock);
             await studyEditor.selectDesignType(DesignType.RowAndColumn);
-            await studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock);
-            await studyEditor.selectDesignType(DesignType.PrepDesign);
-            await studyEditor.selectDesignType(DesignType.EntryListOrder);
+            await studyEditor.verifyDefaultViewForRowAndColumn();
         });
 
-        await test.step('Generate Randomized Complete Block Design', async() => {
-            await studyEditor.navigateToTab('Experimental Design');
-            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+        await test.step('Generate Row and Column Design', async() => {
+            await studyEditor.selectDesignType(DesignType.RowAndColumn);
             await studyEditor.fillStartingPlotNumber('1');
-            await studyEditor.fillNumberOfReplications('12');
+            await studyEditor.fillNumberOfReplications('2');
+            await studyEditor.fillNumberOfRowsInReplication('4');
+            await studyEditor.fillNumberOfColumnsInReplication('5');
             await studyEditor.clickGenerateDesign();
         });
 
@@ -566,21 +554,23 @@ test.describe('Sanity Testing',()=>{
             await studyEditor.browseGermplasmList(listName);
         });
 
-        await test.step('Verify Experimental Design form views', async() => {
-            await studyEditor.navigateToTab('Experimental Design');
-            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
-            await studyEditor.selectDesignType(DesignType.ResolvableIncompleteBlock);
-            await studyEditor.selectDesignType(DesignType.RowAndColumn);
-            await studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock);
-            await studyEditor.selectDesignType(DesignType.PrepDesign);
-            await studyEditor.selectDesignType(DesignType.EntryListOrder);
+        await test.step('Update two 2 germplasm entries as Check Entry', async() => {
+            await studyEditor.navigateToTab('Germplasm & Checks');
+            await studyEditor.selectEntryType(0, 'C');
+            await studyEditor.selectEntryType(1, 'C');
         });
 
-        await test.step('Generate Randomized Complete Block Design', async() => {
+        await test.step('Verify Experimental Design form views', async() => {
             await studyEditor.navigateToTab('Experimental Design');
-            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+        });
+
+        await test.step('Generate Augmented Randomized Block Design', async() => {
+            await studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock);
             await studyEditor.fillStartingPlotNumber('1');
-            await studyEditor.fillNumberOfReplications('12');
+            await studyEditor.fillNumberOfBlocks('2');
+            await studyEditor.verifyDefaultViewForAugmentedRandomized();
+            //await page.waitForTimeout(10000);
+            await page.waitForTimeout(10000);
             await studyEditor.clickGenerateDesign();
         });
 
@@ -620,21 +610,25 @@ test.describe('Sanity Testing',()=>{
             await studyEditor.browseGermplasmList(listName);
         });
 
-        await test.step('Verify Experimental Design form views', async() => {
-            await studyEditor.navigateToTab('Experimental Design');
-            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
-            await studyEditor.selectDesignType(DesignType.ResolvableIncompleteBlock);
-            await studyEditor.selectDesignType(DesignType.RowAndColumn);
-            await studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock);
-            await studyEditor.selectDesignType(DesignType.PrepDesign);
-            await studyEditor.selectDesignType(DesignType.EntryListOrder);
+        await test.step('Update two 2 germplasm entries as Check Entry', async() => {
+            await studyEditor.navigateToTab('Germplasm & Checks');
+            await studyEditor.selectEntryType(0, 'C');
+            await studyEditor.selectEntryType(1, 'C');
         });
 
-        await test.step('Generate Randomized Complete Block Design', async() => {
+        await test.step('Verify Experimental Design form views', async() => {
             await studyEditor.navigateToTab('Experimental Design');
-            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+            await studyEditor.selectDesignType(DesignType.PrepDesign);
+            await studyEditor.verifyDefaultViewForPRepDesign();
+        });
+
+        await test.step('Generate P-Rep Design', async() => {
+            await studyEditor.navigateToTab('Experimental Design');
+            await studyEditor.selectDesignType(DesignType.PrepDesign);
             await studyEditor.fillStartingPlotNumber('1');
-            await studyEditor.fillNumberOfReplications('12');
+            await studyEditor.fillReplicationPercentage('10');
+            await studyEditor.fillNumberOfReplications('2');
+            await studyEditor.fillNumberOfBlocks('2');
             await studyEditor.clickGenerateDesign();
         });
 
@@ -676,17 +670,13 @@ test.describe('Sanity Testing',()=>{
 
         await test.step('Verify Experimental Design form views', async() => {
             await studyEditor.navigateToTab('Experimental Design');
-            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
-            await studyEditor.selectDesignType(DesignType.ResolvableIncompleteBlock);
-            await studyEditor.selectDesignType(DesignType.RowAndColumn);
-            await studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock);
-            await studyEditor.selectDesignType(DesignType.PrepDesign);
             await studyEditor.selectDesignType(DesignType.EntryListOrder);
+            await studyEditor.verifyDefaultViewForEntryListOrder();
         });
 
-        await test.step('Generate Randomized Complete Block Design', async() => {
+        await test.step('Generate Entry List Order', async() => {
             await studyEditor.navigateToTab('Experimental Design');
-            await studyEditor.selectDesignType(DesignType.RandomizedCompleteBlock);
+            await studyEditor.selectDesignType(DesignType.EntryListOrder);
             await studyEditor.fillStartingPlotNumber('1');
             await studyEditor.fillNumberOfReplications('12');
             await studyEditor.clickGenerateDesign();
