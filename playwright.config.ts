@@ -21,7 +21,7 @@ export default defineConfig({
   expect: { timeout: 60000 }, // 60 seconds to expect
   timeout: 300000, // 5 minutes per test
   use: {
-    actionTimeout: 100000,
+    actionTimeout: 15000,
     navigationTimeout: 30000,
     trace: 'on-first-retry',
     //baseURL: 'https://bms-centos-1.leafnode.io',

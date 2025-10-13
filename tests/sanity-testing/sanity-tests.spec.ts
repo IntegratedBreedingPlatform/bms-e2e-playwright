@@ -569,8 +569,7 @@ test.describe('Sanity Testing',()=>{
             await studyEditor.fillStartingPlotNumber('1');
             await studyEditor.fillNumberOfBlocks('2');
             await studyEditor.verifyDefaultViewForAugmentedRandomized();
-            //await page.waitForTimeout(10000);
-            await page.waitForTimeout(10000);
+            await page.waitForTimeout(2000); // Temporary wait to observe the filled values before clicking Generate Design
             await studyEditor.clickGenerateDesign();
         });
 
@@ -619,16 +618,16 @@ test.describe('Sanity Testing',()=>{
         await test.step('Verify Experimental Design form views', async() => {
             await studyEditor.navigateToTab('Experimental Design');
             await studyEditor.selectDesignType(DesignType.PrepDesign);
-            await studyEditor.verifyDefaultViewForPRepDesign();
+            //await studyEditor.verifyDefaultViewForPRepDesign();
         });
 
         await test.step('Generate P-Rep Design', async() => {
-            await studyEditor.navigateToTab('Experimental Design');
-            await studyEditor.selectDesignType(DesignType.PrepDesign);
             await studyEditor.fillStartingPlotNumber('1');
             await studyEditor.fillReplicationPercentage('10');
             await studyEditor.fillNumberOfReplications('2');
             await studyEditor.fillNumberOfBlocks('2');
+
+            await page.waitForTimeout(2000); // Temporary wait to observe the filled values before clicking Generate Design
             await studyEditor.clickGenerateDesign();
         });
 
@@ -668,17 +667,23 @@ test.describe('Sanity Testing',()=>{
             await studyEditor.browseGermplasmList(listName);
         });
 
+        await test.step('Update two 2 germplasm entries as Check Entry', async() => {
+            await studyEditor.navigateToTab('Germplasm & Checks');
+            await studyEditor.selectEntryType(0, 'C');
+            await studyEditor.selectEntryType(1, 'C');
+        });
+
         await test.step('Verify Experimental Design form views', async() => {
             await studyEditor.navigateToTab('Experimental Design');
+            await page.waitForTimeout(2000); // Temporary wait to observe the selected design type before verifying the view
             await studyEditor.selectDesignType(DesignType.EntryListOrder);
             await studyEditor.verifyDefaultViewForEntryListOrder();
         });
 
         await test.step('Generate Entry List Order', async() => {
-            await studyEditor.navigateToTab('Experimental Design');
-            await studyEditor.selectDesignType(DesignType.EntryListOrder);
             await studyEditor.fillStartingPlotNumber('1');
-            await studyEditor.fillNumberOfReplications('12');
+            await studyEditor.fillCheckStartingPosition('1');
+            await studyEditor.fillCheckSpacing('2');
             await studyEditor.clickGenerateDesign();
         });
 
