@@ -47,13 +47,10 @@ export class LoginPage{
             this.page.waitForResponse(
                 response => response.url().includes('/bmsapi/auth/validateLogin') && response.status() === 200
             ),
+            this.page.waitForLoadState('networkidle'),
+            this.page.waitForURL('**/ibpworkbench/main/app/#/programs/my-studies'),
             this.clickLogin()
         ]);
-
-        await this.page.waitForLoadState('networkidle');
-        await this.page.waitForLoadState('domcontentloaded');
-        await this.page.waitForLoadState('load');
-        // Give a small delay to ensure all storage is properly set
-        await this.page.waitForTimeout(1000);
+        
     }
 }

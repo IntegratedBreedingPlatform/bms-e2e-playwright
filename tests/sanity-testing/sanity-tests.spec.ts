@@ -593,7 +593,6 @@ test.describe('Sanity Testing',()=>{
             ]);
 
             await studyEditor.verifyDefaultViewForAugmentedRandomized();
-            await page.waitForTimeout(5000); // Temporary wait to observe the filled values before clicking Generate Design
             await studyEditor.clickGenerateDesign();
         });
 
