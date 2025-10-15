@@ -5,7 +5,7 @@ import { DashboardPage } from '../../pages/dashboard-page';
 import { SideBarPage } from '../../pages/sidebar-page';
 import { GermplasmManagerPage } from '../../pages/germplasm-manager-page';
 import { AddProgramPage } from '../../pages/add-program-page';
-import { DesignType, SidebarMenu, SidebarSection, TEST_CROP } from '../../pages/app.constants';
+import { DesignType, SidebarMenu, SidebarSection, TEST_BMS_VERSION, TEST_CROP, TEST_PASSWORD, TEST_USERNAME } from '../../pages/app.constants';
 import { SaveGermplasmListModalPage } from '../../pages/save-germplasm-list-modal-page';
 import { ManageStudiesPage } from '../../pages/study-manager/manage-studies-page';
 import { CreateNewStudyPage } from '../../pages/study-manager/create-new-study-page';
@@ -191,10 +191,14 @@ test.describe('Sanity Testing',()=>{
         await page.waitForLoadState('networkidle');
 
         await test.step('Login using admin credentials', async() => {
-            await login.fillUsername('admin');
-            await login.fillPassword('@dm1N');
+            await login.fillUsername(TEST_USERNAME);
+            await login.fillPassword(TEST_PASSWORD);
             await login.clickLogin();
         });
+
+        // await expect(page.getByText('Upgrade Notification'), 'Verify that Upgrade Notification is visibsle after logging in').toBeVisible();
+        // await page.getByRole('button', { name: 'Ok' }).click();
+        // await expect(page.getByText('Upgrade Notification'), 'Verify that Upgrade Notification is not visible after clicking OK').toBeHidden();
 
         await test.step('Verify dashboard page elements', async() => {
             await dashboard.verifyDashboardURL();
@@ -341,7 +345,8 @@ test.describe('Sanity Testing',()=>{
 
         await test.step('Verify the BMS Version on login page', async() => {
             const element = await page.locator('[data-test="bms-version"]');
-            await expect(element).toHaveText('30.2');
+            expect(TEST_BMS_VERSION, 'Ensure that TEST_BMS_VERSION is provided').not.toBeUndefined();
+            await expect(element).toHaveText(TEST_BMS_VERSION);
         });
 
     });

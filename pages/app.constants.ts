@@ -1,3 +1,6 @@
+export const TEST_USERNAME = process.env.TEST_USERNAME;
+export const TEST_PASSWORD = process.env.TEST_PASSWORD;
+export const TEST_BMS_VERSION = process.env.TEST_BMS_VERSION;
 export const TEST_CROP = 'maize';
 export const TEST_PROGRAM_NAME = 'Testing Program';
 export const TEST_STORAGE_LOCATION = 'Default Seed Store';

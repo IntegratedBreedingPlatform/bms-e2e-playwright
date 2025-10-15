@@ -1,4 +1,5 @@
 import {expect,Page, Locator} from '@playwright/test';
+import { TEST_PASSWORD, TEST_USERNAME } from './app.constants';
 
 export class LoginPage{
     private readonly page: Page;
@@ -17,13 +18,15 @@ export class LoginPage{
         await this.page.goto('/ibpworkbench/main/app/#/login?logout');
     }
 
-    async fillUsername(username: string){
+    async fillUsername(username: any){
         await this.usernameFld.waitFor();
+        await expect(username, 'Ensure that username is provided').not.toBeUndefined();
         await this.usernameFld.fill(username);
     }
 
-     async fillPassword(password: string){
+    async fillPassword(password: any){
         await this.passwordFld.waitFor();
+        await expect(password, 'Ensure that password is provided').not.toBeUndefined();
         await this.passwordFld.fill(password);
     }
 
@@ -37,8 +40,8 @@ export class LoginPage{
         await this.goto();
         await this.page.waitForLoadState('networkidle');
         // Perform authentication steps
-        await this.fillUsername("admin");
-        await this.fillPassword("@dm1N");
+        await this.fillUsername(TEST_USERNAME);
+        await this.fillPassword(TEST_PASSWORD);
         await this.clickLogin();
 
         // Give a small delay to ensure all storage is properly set
