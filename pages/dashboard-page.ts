@@ -27,13 +27,14 @@ export class DashboardPage{
         this.launchProgramBtn = page.locator('[data-test="launchProgramButton"]').describe('Launch button')
     }
 
-    private selectCropFromList(crop: string): Locator {
-        return this.page.getByRole('option', { name: crop }).first();
+    async selectCropFromList(crop: string) {
+        await this.page.getByRole('option', { name: crop }).first().click();
     }
 
-    private selectProgramFromList(program: string): Locator {
-        return this.page.getByRole('option', { name: program }).first();
+    async selectProgramFromList(program: string) {
+        await this.page.getByRole('option', { name: program }).first().click();
     }
+    
     async goto(){
         await this.page.goto('/ibpworkbench/main/app/#/programs/my-studies');
         await this.page.waitForLoadState('networkidle');
@@ -59,7 +60,7 @@ export class DashboardPage{
         await this.cropLabel.waitFor();
         await this.cropDropDown.waitFor();
         await this.cropDropDown.fill(crop);
-        await this.selectCropFromList(crop).click();
+        await this.selectCropFromList(crop);
 
     }
 
@@ -67,7 +68,7 @@ export class DashboardPage{
         await this.programLabel.waitFor();
         await this.programDropdown.waitFor();
         await this.programDropdown.fill(program);
-        await this.selectProgramFromList(program).click();
+        await this.selectProgramFromList(program);
 
     }
 

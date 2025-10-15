@@ -566,15 +566,34 @@ test.describe('Sanity Testing',()=>{
         });
 
         await test.step('Verify Experimental Design form views', async() => {
-            await studyEditor.navigateToTab('Experimental Design');
+            await Promise.all([
+                page.waitForResponse(
+                    response => response.url().includes('/check-insertion-manners') && response.status() === 200
+                ),
+                studyEditor.navigateToTab('Experimental Design')
+            ]);
         });
 
         await test.step('Generate Augmented Randomized Block Design', async() => {
-            await studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock);
+
+            await Promise.all([
+                page.waitForResponse(
+                    response => response.url().includes('/entries/metadata') && response.status() === 200
+                ),
+                studyEditor.selectDesignType(DesignType.AugmentedRandomizedBlock)
+            ]);
+
             await studyEditor.fillStartingPlotNumber('1');
-            await studyEditor.fillNumberOfBlocks('2');
+
+            await Promise.all([
+                page.waitForResponse(
+                    response => response.url().includes('/entries/metadata') && response.status() === 200
+                ),
+                await studyEditor.fillNumberOfBlocks('2')
+            ]);
+
             await studyEditor.verifyDefaultViewForAugmentedRandomized();
-            await page.waitForTimeout(2000); // Temporary wait to observe the filled values before clicking Generate Design
+            await page.waitForTimeout(5000); // Temporary wait to observe the filled values before clicking Generate Design
             await studyEditor.clickGenerateDesign();
         });
 
@@ -621,7 +640,14 @@ test.describe('Sanity Testing',()=>{
         });
 
         await test.step('Verify Experimental Design form views', async() => {
-            await studyEditor.navigateToTab('Experimental Design');
+
+            await Promise.all([
+                page.waitForResponse(
+                    response => response.url().includes('/check-insertion-manners') && response.status() === 200
+                ),
+                studyEditor.navigateToTab('Experimental Design')
+            ]);
+
             await studyEditor.selectDesignType(DesignType.PrepDesign);
             //await studyEditor.verifyDefaultViewForPRepDesign();
         });

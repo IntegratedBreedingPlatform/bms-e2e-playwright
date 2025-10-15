@@ -42,8 +42,17 @@ export class LoginPage{
         // Perform authentication steps
         await this.fillUsername(TEST_USERNAME);
         await this.fillPassword(TEST_PASSWORD);
-        await this.clickLogin();
 
+        await Promise.all([
+            this.page.waitForResponse(
+                response => response.url().includes('/bmsapi/auth/validateLogin') && response.status() === 200
+            ),
+            this.clickLogin()
+        ]);
+
+        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForLoadState('domcontentloaded');
+        await this.page.waitForLoadState('load');
         // Give a small delay to ensure all storage is properly set
         await this.page.waitForTimeout(1000);
     }
