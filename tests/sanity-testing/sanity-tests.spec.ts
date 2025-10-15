@@ -589,7 +589,7 @@ test.describe('Sanity Testing',()=>{
                 page.waitForResponse(
                     response => response.url().includes('/entries/metadata') && response.status() === 200
                 ),
-                await studyEditor.fillNumberOfBlocks('2')
+                studyEditor.fillNumberOfBlocks('2')
             ]);
 
             await studyEditor.verifyDefaultViewForAugmentedRandomized();
@@ -656,7 +656,6 @@ test.describe('Sanity Testing',()=>{
             await studyEditor.fillReplicationPercentage('10');
             await studyEditor.fillNumberOfReplications('2');
             await studyEditor.fillNumberOfBlocks('2');
-
             await page.waitForTimeout(2000); // Temporary wait to observe the filled values before clicking Generate Design
             await studyEditor.clickGenerateDesign();
         });
@@ -704,9 +703,22 @@ test.describe('Sanity Testing',()=>{
         });
 
         await test.step('Verify Experimental Design form views', async() => {
-            await studyEditor.navigateToTab('Experimental Design');
-            await page.waitForTimeout(2000); // Temporary wait to observe the selected design type before verifying the view
-            await studyEditor.selectDesignType(DesignType.EntryListOrder);
+            await Promise.all([
+                page.waitForResponse(
+                    response => response.url().includes('/check-insertion-manners') && response.status() === 200
+                ),
+                studyEditor.navigateToTab('Experimental Design')
+            ]);
+
+            await page.waitForTimeout(2000); // Temporary wait to observe the filled values before clicking Generate Design
+
+            await Promise.all([
+                page.waitForResponse(
+                    response => response.url().includes('/entries/metadata') && response.status() === 200
+                ),
+                studyEditor.selectDesignType(DesignType.EntryListOrder)
+            ]);
+
             await studyEditor.verifyDefaultViewForEntryListOrder();
         });
 
