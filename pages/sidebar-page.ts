@@ -42,7 +42,6 @@ export class SideBarPage{
             await sidebarTree.click();
             await expect(sidebarTree).toHaveAttribute('aria-expanded', 'true');
         } else {
-            console.log('The documents tree item is already expanded.');
         }
     }
     async clickSideBarMenu(sidebarMenu: SidebarMenu){
