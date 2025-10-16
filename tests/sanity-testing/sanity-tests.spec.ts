@@ -62,7 +62,6 @@ export const test = base.extend<BMSPages>({
         // Use the fixture value in the test.
         await use(addProgramPage);
 
-
         // Always delete the newly created program after the test
         const dashboard = new DashboardPage(page);
         await test.step('Launch an existing program', async() => {
@@ -351,16 +350,22 @@ test.describe('Sanity Testing',()=>{
 
     });
 
-    test('IBP-T292 Check if Pedigree Tree and Graph are showing', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, sidebar, germplasmManager }) => {
+    test('IBP-T292 Check if Pedigree Tree and Graph are showing', { tag: ['@sanity'] } ,async ({ browser, login, page, dashboard, sidebar, germplasmManager, addProgram }) => {
 
         await login.authenticate();
 
-        await test.step('Go to Dashboard and launch a program', async() => {
+        let newProgram = '';
+
+        await test.step('Go to Dashboard page and click Add Program', async() => {
             await dashboard.goto();
-            await dashboard.selectCrop('maize');
-            await dashboard.selectProgram('TestingProgram');
-            await dashboard.launchProgram();
+            await dashboard.clickAddProgram();
         });
+
+        await test.step('Create a new program', async() => {
+            newProgram = await addProgram.createNewProgram();
+        });
+
+        await sidebar.verifyPageHeading('Manage Program Settings');
 
         await test.step('Go to Manage Germplasm Page', async() => {
             await sidebar.expandSidebarTree(SidebarSection.GERMPLASM);
@@ -376,15 +381,19 @@ test.describe('Sanity Testing',()=>{
             await germplasmManager.clickGIDLink('1');
         });
 
-
-        await expect(page.getByText('Germplasm Details:'), 'Verify that the Germplasm Details is displayed').toBeVisible();
-        // Navigate to Pedigree Tab
-        await page.getByRole('link', { name: 'Pedigree' }).click();
-        // Click the View Pedigree Graph
-        await page.getByRole('button', { name: 'View Pedigree Graph' }).click();
-        await expect(page.getByRole('heading', { name: 'Pedigree Graph' }), 'Verify that Pedigree Graph is displayed').toBeVisible();
-        await expect(page.locator('polygon').first(), 'Verify that at least one polygon is visible').toBeVisible();
-
+        await test.step('Verify that the Germplasm Details is displayed', async() => {
+            await expect(page.getByText('Germplasm Details:'), 'Verify that the Germplasm Details is displayed').toBeVisible();
+            // Navigate to Pedigree Tab
+            await page.getByRole('link', { name: 'Pedigree' }).click();
+            // Click the View Pedigree Graph
+            await page.getByRole('button', { name: 'View Pedigree Graph' }).click();
+            await expect(page.getByRole('heading', { name: 'Pedigree Graph' }), 'Verify that Pedigree Graph is displayed').toBeVisible();
+            await expect(page.locator('polygon').first(), 'Verify that at least one polygon is visible').toBeVisible();
+            await page.locator('div').filter({ hasText: /^Pedigree Graph$/ }).locator('button').click();
+            await page.waitForTimeout(1000);
+            await page.getByRole('button', { name: 'Close' }).nth(0).click();
+            await page.waitForTimeout(1000);
+        });
 
     });
 
