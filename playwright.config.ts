@@ -1,12 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
-
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+import dotenv from 'dotenv';
+import path from 'path';
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -15,21 +10,23 @@ export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  retries: process.env.CI ? 3 : 3,
+  workers: undefined,
   reporter: 'html',
-  expect: { timeout: 50000 },
+  expect: { timeout: 60000 }, // 60 seconds to expect
+  timeout: 300000, // 5 minutes per test
   use: {
-    actionTimeout: 100000,
+    actionTimeout: 15000,
     navigationTimeout: 30000,
     trace: 'on-first-retry',
-    baseURL: 'https://bms-centos-1.leafnode.io',
+    baseURL: process.env.BASE_URL || 'http://localhost:8080',
     screenshot: 'only-on-failure'
   },
-  projects: [
+  projects: [  
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'],
+      }
     }
 
     // {

@@ -7,7 +7,7 @@ Test automation of BMS using Playwright
 1. **Clone the repository:**
    ```bash
    git clone <repository-url>
-   cd bms-playwright
+   cd bms-e2e-playwright
    ```
 
 2. **Install dependencies:**

@@ -27,50 +27,58 @@ export class DashboardPage{
         this.launchProgramBtn = page.locator('[data-test="launchProgramButton"]').describe('Launch button')
     }
 
-    private selectCropFromList(crop: string): Locator {
-        return this.page.getByRole('option', { name: crop });
+    async selectCropFromList(crop: string) {
+        await this.page.getByRole('option', { name: crop }).first().click();
     }
 
-    private selectProgramFromList(program: string): Locator {
-        return this.page.getByRole('option', { name: program });
+    async selectProgramFromList(program: string) {
+        await this.page.getByRole('option', { name: program }).first().click();
     }
-
+    
+    async goto(){
+        await this.page.goto('/ibpworkbench/main/app/#/programs/my-studies');
+        await this.page.waitForLoadState('networkidle');
+    }
     async verifyDashboardURL(){
-        await expect(this.page).not.toHaveURL('/app/#/programs/my-studies');
+        await expect(this.page, 'Verify that the current page is Dashboard').toHaveURL('/ibpworkbench/main/app/#/programs/my-studies');
     }
     async verifySiteAdminBtn(){
-        await expect(this.siteAdminBtn).toBeVisible();
-
+        await expect(this.siteAdminBtn, 'Verify that Site Admin button is visible').toBeVisible();
     }
     async verifyMyProgramsBtn(){ 
-        await expect(this.myProgramsBtn).toBeVisible();
+        await expect(this.myProgramsBtn, 'Verify that My Programs button is visible').toBeVisible();
     }
 
     async verifyFieldmapManagerBtn(){
-        await expect(this.fieldmapMgrBtn).toBeVisible();
+        await expect(this.fieldmapMgrBtn, 'Verify that Fieldmap Manager button is visible').toBeVisible();
     }
     async verifyAddProgramBtn(){
-        await expect(this.addProgramBtn).toBeVisible();
+        await expect(this.addProgramBtn, 'Verify that Add Program is visible').toBeVisible();
     }
 
     async selectCrop(crop: string){
-        await expect(this.cropLabel).toBeVisible();
-        await expect(this.cropDropDown).toBeVisible();
+        await this.cropLabel.waitFor();
+        await this.cropDropDown.waitFor();
         await this.cropDropDown.fill(crop);
-        await this.selectCropFromList(crop).click();
+        await this.selectCropFromList(crop);
 
     }
 
     async selectProgram(program: string){
-        await expect(this.programLabel).toBeVisible();
-        await expect(this.programDropdown).toBeVisible();
+        await this.programLabel.waitFor();
+        await this.programDropdown.waitFor();
         await this.programDropdown.fill(program);
-        await this.selectProgramFromList(program).click();
+        await this.selectProgramFromList(program);
 
     }
 
     async launchProgram(){
         await this.launchProgramBtn.waitFor();
         await this.launchProgramBtn.click();
+    }
+
+    async clickAddProgram(){
+        await this.addProgramBtn.waitFor();
+        await this.addProgramBtn.click();
     }
 }
