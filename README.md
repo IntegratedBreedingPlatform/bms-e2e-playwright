@@ -15,7 +15,7 @@ Test automation of BMS using Playwright
    npm install
    ```
 
-3. **Add .env file to specify the test parameters**
+3. **Create a new .env file and specify the test parameters:**
    ```bash
    # The target server
    BASE_URL=https://bms-centos-1.leafnode.io
