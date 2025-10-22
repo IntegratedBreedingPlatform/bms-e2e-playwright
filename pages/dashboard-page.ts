@@ -37,6 +37,7 @@ export class DashboardPage{
     
     async goto(){
         await this.page.goto('/ibpworkbench/main/app/#/programs/my-studies');
+        await this.page.waitForLoadState('load');
         await this.page.waitForLoadState('networkidle');
     }
     async verifyDashboardURL(){
@@ -57,7 +58,6 @@ export class DashboardPage{
     }
 
     async selectCrop(crop: string){
-        await this.cropLabel.waitFor();
         await this.cropDropDown.waitFor();
         await this.cropDropDown.fill(crop);
         await this.selectCropFromList(crop);

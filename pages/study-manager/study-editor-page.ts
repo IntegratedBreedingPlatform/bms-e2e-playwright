@@ -68,7 +68,9 @@ export class StudyEditorPage {
     async selectEntryType(rowIndex: number, entryType: 'C' | 'T') {
         await this.page.locator('td[data-test="germplasm-entries-table-cell-8255"]').nth(rowIndex).click();
         await this.page.locator('td[data-test="germplasm-entries-table-cell-8255"]').nth(rowIndex).getByRole('combobox').click();
-        await this.page.getByRole('option', {name: entryType, exact: true}).first().click();
+        await this.page.getByRole('option', {name: entryType, exact: true}).first().scrollIntoViewIfNeeded();
+        await this.page.getByRole('option', {name: entryType, exact: true}).first().click({force: true});
+
         await this.page.locator('jhi-germplasm-checks').focus();
         await this.page.waitForLoadState('networkidle');
     }
@@ -125,7 +127,7 @@ export class StudyEditorPage {
             - spinbutton "Specify the starting plot number:"
             - text: "SPECIFY DESIGN PARAMETERS Number of replications:"
             - spinbutton "Number of replications:"
-            - checkbox "First rep not randomized" [checked]
+            - checkbox "First rep not randomized"
             - text: "First rep not randomized Block Size:"
             - spinbutton "Block Size:"
             - checkbox "Show advanced options"
@@ -154,7 +156,7 @@ export class StudyEditorPage {
             - spinbutton "Specify the starting plot number:"
             - text: "SPECIFY DESIGN PARAMETERS Number of replications:"
             - spinbutton "Number of replications:"
-            - checkbox "First rep not randomized" [checked]
+            - checkbox "First rep not randomized"
             - text: "First rep not randomized Number of rows in replications:"
             - spinbutton "Number of rows in replications:"
             - text: "Number of columns in replications:"

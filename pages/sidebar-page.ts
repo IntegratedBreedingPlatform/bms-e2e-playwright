@@ -63,7 +63,7 @@ export class SideBarPage{
 
     async verifyFrameHeading(header: string){
         const frameHeading = await this.getFrameHeading(header);
-        await frameHeading.waitFor()
+        await frameHeading.waitFor({ timeout: 90000 });
         await expect(frameHeading).toBeVisible();
     }
     

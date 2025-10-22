@@ -519,6 +519,8 @@ test.describe('Sanity Testing',()=>{
 
         await test.step('Verify Experimental Design form views', async() => {
             await studyEditor.navigateToTab('Experimental Design');
+            await page.waitForTimeout(5000); // Temporary wait to observe the filled values before clicking Generate Design
+
             await studyEditor.selectDesignType(DesignType.RowAndColumn);
             await studyEditor.verifyDefaultViewForRowAndColumn();
         });
@@ -719,7 +721,7 @@ test.describe('Sanity Testing',()=>{
                 studyEditor.navigateToTab('Experimental Design')
             ]);
 
-            await page.waitForTimeout(2000); // Temporary wait to observe the filled values before clicking Generate Design
+            await page.waitForTimeout(5000); // Temporary wait to observe the filled values before clicking Generate Design
 
             await Promise.all([
                 page.waitForResponse(

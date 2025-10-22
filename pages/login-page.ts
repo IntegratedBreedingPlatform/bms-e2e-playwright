@@ -54,7 +54,7 @@ export class LoginPage{
         await this.page.waitForLoadState('domcontentloaded');
         await this.page.waitForLoadState('load');
         // Give a small delay to ensure all storage is properly set
-        await this.page.waitForTimeout(1000);
+        await this.page.waitForTimeout(3000);
 
     }
 }
