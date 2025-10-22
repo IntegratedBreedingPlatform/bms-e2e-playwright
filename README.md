@@ -15,13 +15,24 @@ Test automation of BMS using Playwright
    npm install
    ```
 
-3. **Run the tests:**
+3. **Create a new .env file and specify the test parameters:**
+   ```bash
+   # The target server
+   BASE_URL=https://bms-centos-1.leafnode.io
+    # Login credentials for logging in the target server
+   TEST_USERNAME=username
+   TEST_PASSWORD=password
+    # The BMS version that will be used to verify the installed version in the target server
+   TEST_BMS_VERSION=30.2
+   ```
+   
+4. **Run the tests:**
    To execute the tests "headless by default", use the following command:
    ```bash
    npx playwright test
    ```
 
-4. **Open Playwright Test Report (after execution):**
+5. **Open Playwright Test Report (after execution):**
    ```bash
    npx playwright show-report
    ```
