@@ -23,7 +23,7 @@ export class AddProgramPage{
     }
 
     private selectCropFromList(crop: string): Locator {
-        return this.page.getByRole('option', { name: crop });
+        return this.page.getByRole('option', { name: crop, exact: true });
     }
 
     private selectBreedingLocFromList(breedingLoc: string){
