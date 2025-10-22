@@ -28,7 +28,7 @@ export class DashboardPage{
     }
 
     async selectCropFromList(crop: string) {
-        await this.page.getByRole('option', { name: crop }).first().click();
+        await this.page.getByRole('option', { name: crop, exact: true }).first().click();
     }
 
     async selectProgramFromList(program: string) {
