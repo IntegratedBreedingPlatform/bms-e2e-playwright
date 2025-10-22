@@ -377,8 +377,8 @@ test.describe('Sanity Testing',()=>{
         await page.waitForLoadState('networkidle');
 
         await test.step('Filter by GID and click the GID link', async() => {
-            await germplasmManager.filterByGID('1');
-            await germplasmManager.clickGIDLink('1');
+            await germplasmManager.filterByGID('500');
+            await germplasmManager.clickGIDLink('500');
         });
 
         await test.step('Verify that the Germplasm Details is displayed', async() => {

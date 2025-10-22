@@ -27,10 +27,10 @@ export class SideBarPage{
         return this.page.getByText(text, { exact: true });
     }
 
-    private getFrameHeading(header: string): Locator{
+    async getFrameHeading(header: string) {
         return this.pageFrame.getByRole('heading', { name: header });
     } 
-    private getFrameText(text: string): Locator{
+    async getFrameText(text: string) {
         return this.pageFrame.getByText(text);
     }
 
@@ -62,13 +62,13 @@ export class SideBarPage{
     }
 
     async verifyFrameHeading(header: string){
-        const frameHeading = this.getFrameHeading(header);
+        const frameHeading = await this.getFrameHeading(header);
         await frameHeading.waitFor()
         await expect(frameHeading).toBeVisible();
     }
     
     async verifyFrameText(text: string){
-        const frameText = this.getFrameText(text);
+        const frameText = await this.getFrameText(text);
         await frameText.waitFor();
         await expect(frameText).toBeVisible();
     }

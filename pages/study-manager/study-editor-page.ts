@@ -92,7 +92,7 @@ export class StudyEditorPage {
             - spinbutton "Specify the starting plot number:"
             - text: "SPECIFY DESIGN PARAMETERS Number of replications:"
             - spinbutton "Number of replications:"
-            - checkbox "First rep not randomized" [checked]
+            - checkbox "First rep not randomized"
             - text: "/First rep not randomized SUMMARY OF DESIGN DETAILS Number of environments: 1 Number of treatments: \\\\d+ Plot factor:/"
             - link "PLOT_NO"
             - text: "Replicate factor:"
