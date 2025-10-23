@@ -20,7 +20,10 @@ export default defineConfig({
     navigationTimeout: 30000,
     trace: 'on-first-retry',
     baseURL: process.env.BASE_URL || 'http://localhost:8080',
-    screenshot: 'only-on-failure'
+    screenshot: 'only-on-failure',
+    // launchOptions: {
+    //   slowMo: 1000, // 1 second delay between operations
+    // },
   },
   projects: [  
     {

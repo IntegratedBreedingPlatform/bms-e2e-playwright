@@ -68,8 +68,13 @@ export class StudyEditorPage {
     async selectEntryType(rowIndex: number, entryType: 'C' | 'T') {
         await this.page.locator('td[data-test="germplasm-entries-table-cell-8255"]').nth(rowIndex).click();
         await this.page.locator('td[data-test="germplasm-entries-table-cell-8255"]').nth(rowIndex).getByRole('combobox').click();
-        await this.page.getByRole('option', {name: entryType, exact: true}).first().scrollIntoViewIfNeeded();
-        await this.page.getByRole('option', {name: entryType, exact: true}).first().click({force: true});
+
+        // Wait for options to appear
+        await this.page.waitForSelector('.ng-option');
+
+        // Select the option
+        await this.page.locator('.ng-option', {hasText: new RegExp(`^${entryType}$`) }).scrollIntoViewIfNeeded();
+        await this.page.locator('.ng-option', {hasText: new RegExp(`^${entryType}$`) }).click({force: true});
 
         await this.page.locator('jhi-germplasm-checks').focus();
         await this.page.waitForLoadState('networkidle');
