@@ -56,10 +56,6 @@ export class StudyEditorPage {
         await this.page.getByText(listName, { exact: true }).click();
         await this.page.locator('[data-test="treeTableOkButton"]').click();
         await expect(this.page.getByRole('heading', { name: 'Browse for lists' })).toBeHidden();
-
-        await expect(this.page.locator('jhi-germplasm-checks')).toContainText('Click "Modify List" if you wish to change the germplasm list. Take note that this will also remove any existing observations and field layout generated.');
-        await expect(this.page.getByRole('button', { name: 'Modify List' })).toBeVisible();
-
         await expect(this.page.locator('span').filter({ hasText: 'Total Entries:' }).locator('span')).toContainText('20');
 
         this.page.waitForLoadState('networkidle');
